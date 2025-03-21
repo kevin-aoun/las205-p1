@@ -1,0 +1,8 @@
+music/src/models
+music/src/uploads
+
+music/data
+weight/data
+
+/venv
+.idea
