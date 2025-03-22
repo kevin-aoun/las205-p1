@@ -1,0 +1,29 @@
+app:
+  height_range:
+  - 0
+  - 200
+  default_height: 100
+  title: Weight Predictor
+data:
+  age_bins:
+  - 0
+  - 25
+  - 31
+  - 999
+  age_labels:
+  - young
+  - mid
+  - older
+  save_uploads: true
+  uploads_dir: uploads
+logging:
+  console: true
+  file: app.log
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  level: INFO
+model:
+  models_dir: models
+  n_estimators: 100
+  random_state: 42
+  save_model: true
+  use_saved_model: true
