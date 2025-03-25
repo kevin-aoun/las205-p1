@@ -1,7 +1,9 @@
 music/src/models
 music/src/uploads
-
 music/data
+
+weight/src/models
+weight/src/uploads
 weight/data
 
 **/__pycache__/
