@@ -4,5 +4,6 @@ music/src/uploads
 music/data
 weight/data
 
+**/__pycache__/
 /venv
 .idea
