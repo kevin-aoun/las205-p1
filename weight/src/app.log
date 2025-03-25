@@ -1,0 +1,468 @@
+2025-03-22 14:14:18,621 - music_preference_predictor - INFO - Application started
+2025-03-22 14:14:31,371 - music_preference_predictor - INFO - Application started
+2025-03-22 14:14:31,393 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows, 3 columns
+2025-03-22 14:14:31,399 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:14:31,409 - music_preference_predictor - ERROR - Error processing uploaded file: 'age'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'age'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 79, in main
+    st.session_state['min_age'] = df['age'].min()
+                                  ~~^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'age'
+2025-03-22 14:16:30,394 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:16:50,256 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:16:50,256 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:16:50,256 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:17:00,511 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:17:01,932 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:18:31,136 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:23:08,858 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:24:17,603 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:24:17,603 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:24:17,603 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:24:17,603 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:24:28,041 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:24:28,050 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:24:28,055 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:24:28,060 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:25:13,271 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:25:13,280 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:25:13,285 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:25:13,287 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:25:13,934 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:25:13,941 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:25:13,946 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:25:13,948 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:25:15,843 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:25:15,853 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:25:15,856 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:25:15,858 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:25:16,890 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:25:16,897 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:25:16,900 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:25:16,901 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:28:22,645 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:28:27,191 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:28:27,199 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:28:27,202 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:28:27,204 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:28:31,636 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:28:31,649 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:28:31,654 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:28:31,658 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:28:32,538 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:28:32,550 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:28:32,553 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:28:32,556 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:30:34,588 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:30:39,479 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:30:39,488 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:30:39,494 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:30:39,497 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:30:44,796 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:30:44,805 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:30:44,810 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:30:44,811 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:31:55,971 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:32:00,295 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:32:00,303 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:32:00,306 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:32:00,309 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:32:05,832 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:32:05,841 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:32:05,847 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:32:05,849 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:32:05,873 - music_preference_predictor - INFO - Predictions displayed for height=100, gender=1
+2025-03-22 14:34:10,711 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:34:15,605 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:34:15,617 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:34:15,620 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:34:15,624 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:34:35,280 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:34:35,287 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:34:35,291 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:34:35,294 - music_preference_predictor - ERROR - Error processing file: 'height'
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3791, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'height'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MAKOUZI\Desktop\Mechatronics Engineering\Third Year\Spring 2025\LAS205\Project 1\las205-p1\weight\src\app.py", line 65, in main
+    st.session_state['min_height'] = df['height'].min()
+                                     ~~^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MAKOUZI\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\indexes\base.py", line 3798, in get_loc
+    raise KeyError(key) from err
+KeyError: 'height'
+2025-03-22 14:34:35,307 - music_preference_predictor - INFO - Predictions displayed for height=100, gender=1
+2025-03-22 14:35:10,848 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:35:15,431 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:35:15,443 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:35:15,448 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:35:20,103 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:35:20,125 - music_preference_predictor - INFO - Predictions displayed for height=100, gender=1
+2025-03-22 14:35:36,408 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:35:39,524 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:35:39,533 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:35:39,537 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:37:18,777 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:37:23,313 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:37:23,322 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:37:23,327 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:37:28,184 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:37:28,204 - music_preference_predictor - INFO - Predictions displayed for height=100, gender=1
+2025-03-22 14:39:08,318 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:39:30,728 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:39:30,739 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:39:30,746 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:39:35,794 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:39:37,104 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:40:49,677 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:41:00,332 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:41:00,340 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:41:00,347 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:41:04,846 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:41:04,870 - music_preference_predictor - INFO - Predictions displayed for height=100, gender=1
+2025-03-22 14:43:19,529 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:43:24,433 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:43:24,441 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:43:24,446 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:43:29,960 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:43:32,745 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:43:32,765 - music_preference_predictor - INFO - Predictions displayed for height=141, gender=1
+2025-03-22 14:45:07,025 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:45:12,292 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:45:12,302 - music_preference_predictor - INFO - File uploaded: Linear_Regression_Data.csv, 10 rows
+2025-03-22 14:45:12,307 - music_preference_predictor - INFO - Saved uploaded file to uploads\Linear_Regression_Data.csv
+2025-03-22 14:45:19,860 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:45:20,898 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:45:20,937 - music_preference_predictor - INFO - Predictions displayed for height=136, gender=1
+2025-03-22 14:46:13,539 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:46:16,520 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:46:16,544 - music_preference_predictor - INFO - Predictions displayed for height=48, gender=1
+2025-03-22 14:46:33,813 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:46:33,846 - music_preference_predictor - INFO - Predictions displayed for height=48, gender=1
+2025-03-22 14:46:35,577 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:46:37,853 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:46:39,706 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:46:39,733 - music_preference_predictor - INFO - Predictions displayed for height=92, gender=1
+2025-03-22 14:46:45,178 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:46:48,915 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:46:48,932 - music_preference_predictor - INFO - Predictions displayed for height=56, gender=1
+2025-03-22 14:47:23,669 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:47:31,630 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:47:33,200 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:47:34,121 - music_preference_predictor - INFO - Weight predictor app started
+2025-03-22 14:47:34,146 - music_preference_predictor - INFO - Predictions displayed for height=176, gender=1
