@@ -1,13 +1,28 @@
-music/src/models
-music/src/uploads
-music/data
+music/src/models/
+music/src/uploads/
+music/data/
 
-weight/src/models
-weight/src/uploads
-weight/data
+weight/src/models/
+weight/src/uploads/
+weight/data/
 
-**/__pycache__/
-/venv
-.idea
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
 
+# Virtual environments
+/venv/
+venv/
+ENV/
+
+# IDE settings
+.idea/
+.vscode/
+
+# Log files
 *.log
+
+# Database files
+*.db
+*.sqlite3

@@ -1,61 +1,91 @@
-from typing import Optional
-import pandas as pd
+"""
+Random Forest prediction module for music preferences.
+"""
 import os
-import joblib
+import pandas as pd
+import streamlit as st
 import logging
+import joblib
+from typing import Dict, Any, Optional
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 
 from .train_rf import train_and_save_model
 
+# Setup module logger
 logger = logging.getLogger(__name__)
 
-def predict_using_ml(
-        data: Optional[pd.DataFrame],
-        age: int,
-        gender: int,
-        trained_model: RandomForestClassifier=None,
-        label_encoder: LabelEncoder=None):
+
+def check_saved_model_files():
+    """
+    Check if saved model files exist and return the latest ones.
+
+    Returns:
+        tuple: (model_path, encoder_path) or (None, None) if not found
+    """
+    config = st.session_state.config
+    models_dir = config['model']['models_dir']
+
+    if os.path.exists(models_dir):
+        model_files = [f for f in os.listdir(models_dir) if f.startswith('music_preferences_model_')]
+        encoder_files = [f for f in os.listdir(models_dir) if f.startswith('label_encoder_')]
+
+        if model_files and encoder_files:
+            latest_model = sorted(model_files)[-1]
+            latest_encoder = sorted(encoder_files)[-1]
+            return os.path.join(models_dir, latest_model), os.path.join(models_dir, latest_encoder)
+
+    return None, None
+
+
+def predict_using_ml(data: Optional[pd.DataFrame], age: int, gender: int,
+                     trained_model: RandomForestClassifier = None,
+                     label_encoder: LabelEncoder = None) -> Dict[str, Any]:
     """
     Predict music genre preference using machine learning.
 
     Args:
-        data (pd.DataFrame): Dataset containing age, gender, and genre (used only if model is not provided)
+        data (pd.DataFrame, optional): Dataset for training if model not provided
         age (int): User's age
         gender (int): User's gender (1 for male, 0 for female)
         trained_model (RandomForestClassifier, optional): Pre-trained model
         label_encoder (LabelEncoder, optional): Fitted label encoder
 
     Returns:
-        dict: Dictionary with predicted genre and confidence
+        Dict[str, Any]: Dictionary with predicted genre and confidence
     """
-
     try:
+        # If model or encoder not provided, try to load them
         if trained_model is None or label_encoder is None:
-            if os.path.exists('models'):
-                model_files = [f for f in os.listdir('models') if f.startswith('music_preferences_model_')]
-                encoder_files = [f for f in os.listdir('models') if f.startswith('label_encoder_')]
+            logger.info("No model provided, attempting to load or train...")
 
-                if model_files and encoder_files:
-                    latest_model = sorted(model_files)[-1]
-                    latest_encoder = sorted(encoder_files)[-1]
+            # Try to load from disk
+            model_path, encoder_path = check_saved_model_files()
 
-                    try:
-                        trained_model = joblib.load(os.path.join('models', latest_model))
-                        label_encoder = joblib.load(os.path.join('models', latest_encoder))
-                        print(f"Loaded model from {latest_model}")
-                    except Exception as load_err:
-                        print(f"Error loading saved model: {load_err}")
+            if model_path and encoder_path:
+                logger.info(f"Loading model from {model_path} and encoder from {encoder_path}")
+                try:
+                    trained_model = joblib.load(model_path)
+                    label_encoder = joblib.load(encoder_path)
+                except Exception as load_err:
+                    logger.error(f"Error loading saved model: {load_err}", exc_info=True)
+                    trained_model, label_encoder = None, None
 
+            # If still no model and we have data, train a new one
             if (trained_model is None or label_encoder is None) and data is not None:
-                trained_model, label_encoder = train_and_save_model(data)
+                logger.info("Training new model with provided data")
+                result = train_and_save_model(data)
+                if result:
+                    trained_model, label_encoder = result
             elif trained_model is None or label_encoder is None:
+                logger.warning("No model available and no data provided")
                 return {
                     "genre": "No model available and no data provided",
                     "confidence": 0
                 }
 
+        # Make prediction
         logger.info(f"Preparing prediction for input: age={age}, gender={gender}")
         user_data = pd.DataFrame([[age, gender]], columns=['age', 'gender'])
 
@@ -81,6 +111,7 @@ def predict_using_ml(
             "confidence": confidence
         }
     except Exception as e:
+        logger.error(f"Error in ML prediction: {str(e)}", exc_info=True)
         return {
             "genre": f"Error in ML prediction: {str(e)}",
             "confidence": 0

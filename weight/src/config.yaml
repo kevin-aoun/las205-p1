@@ -18,7 +18,7 @@ data:
   uploads_dir: uploads
 logging:
   console: true
-  file: app.log
+  file: logs/app.log
   format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
   level: INFO
 model:

@@ -1,38 +1,29 @@
-# Music Preference Predictor Configuration
-
-# Model settings
-model:
-  save_model: true                # Whether to save models to disk
-  models_dir: "models"            # Directory to save models
-  use_saved_model: true           # Whether to load models from disk
-  n_estimators: 100               # Number of estimators for RandomForest
-  random_state: 42                # Random seed for reproducibility
-
-# Data settings
-data:
-  save_uploads: true              # Whether to save uploaded CSV files
-  uploads_dir: "uploads"          # Directory to save uploaded files
-  age_bins:                       # Age bins for grouping
-    - 0                           # Lower bound of first bin
-    - 25                          # Upper bound of first bin / Lower bound of second bin
-    - 31                          # Upper bound of second bin / Lower bound of third bin
-    - 999                         # Upper bound of third bin (effectively infinity)
-  age_labels:                     # Labels for age bins
-    - "young"
-    - "mid"
-    - "older"
-
-# Application settings
 app:
-  title: "Music Preference Predictor"
-  default_age: 25                 # Default age for slider
-  age_range:                      # Min and max values for age slider
-    - 0
-    - 100
-
-# Logging settings
+  age_range:
+  - 0
+  - 100
+  default_age: 25
+  title: Music Preference Predictor
+data:
+  age_bins:
+  - 0
+  - 25
+  - 31
+  - 999
+  age_labels:
+  - young
+  - mid
+  - older
+  save_uploads: true
+  uploads_dir: uploads
 logging:
-  level: "INFO"                   # Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  file: "app.log"                 # Log file name
-  console: true                   # Log to console
+  console: true
+  file: app.log
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  level: INFO
+model:
+  models_dir: models
+  n_estimators: 100
+  random_state: 42
+  save_model: true
+  use_saved_model: true

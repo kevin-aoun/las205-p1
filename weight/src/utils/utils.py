@@ -55,7 +55,7 @@ def load_config(config_path="config.yaml"):
             'logging': {
                 'level': 'INFO',
                 'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                'file': 'app.log',
+                'file': '/logs/app.log',
                 'console': True
             }
         }
@@ -84,22 +84,21 @@ def setup_logging():
     if config is None:
         config = load_config()
 
-    # Create logger
     logger = logging.getLogger('music_preference_predictor')
 
-    # Set level
     log_level = getattr(logging, config['logging']['level'])
     logger.setLevel(log_level)
 
-    # Create formatter
     formatter = logging.Formatter(config['logging']['format'])
 
-    # Clear existing handlers to avoid duplicate logs
     if logger.handlers:
         logger.handlers.clear()
 
-    # File handler
     if config['logging']['file']:
+        log_dir = os.path.dirname(config['logging']['file'])
+        if log_dir:
+            os.makedirs(log_dir, exist_ok=True)
+
         file_handler = RotatingFileHandler(
             config['logging']['file'],
             maxBytes=10 * 1024 * 1024,  # 10 MB
