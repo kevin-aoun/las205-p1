@@ -2,9 +2,9 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from music_new.core import logger
-from music_new.prediction import predict_using_percentage, predict_using_ml
-from music_new.app.utils import display_percentage_results
+from weight.core import logger
+from weight.prediction import predict_using_percentage, predict_using_ml
+from weight.app.utils import display_percentage_results
 
 
 def render_prediction_tab(model_exists):

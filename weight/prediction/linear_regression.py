@@ -9,7 +9,7 @@ from typing import Dict, Any, Optional
 from sklearn.linear_model import LinearRegression
 
 from .train_weight import train_and_save_model  # Update path if needed
-from music_new.core import check_model_files  # Should check model file path only
+from weight.core import check_model_files  # Should check model file path only
 
 # Setup module logger
 logger = logging.getLogger(__name__)

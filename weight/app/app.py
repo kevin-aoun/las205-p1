@@ -1,8 +1,8 @@
 import streamlit as st
 
-from music_new.app.tabs import *
-from music_new.app.sidebar import render_config_sidebar
-from music_new.core import init_config, check_model_files
+from weight.app.tabs import *
+from weight.app.sidebar import render_config_sidebar
+from weight.core import init_config, check_model_files
 
 def run_app2():
     """Main application entry point"""

@@ -3,8 +3,8 @@ import logging
 import streamlit as st
 import os
 
-from music_new.logs import setup_logging
-from music_new.core import ensure_directories
+from weight.logs import setup_logging
+from weight.core import ensure_directories
 
 logger = logging.getLogger('weight_predictor')
 

@@ -1,5 +1,5 @@
 import streamlit as st
-from music_new.core import update_config
+from weight.core import update_config
 
 def render_config_sidebar():
     """

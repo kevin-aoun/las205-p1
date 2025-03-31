@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 
-from music_new.core import logger, save_uploaded_file
-from music_new.prediction import train_and_save_model
+from weight.core import logger, save_uploaded_file
+from weight.prediction import train_and_save_model
 
 
 def render_data_model_tab(model_exists, latest_model):

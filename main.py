@@ -1,4 +1,4 @@
-from music_new.app import run_app2
+from weight.app import run_app2
 from music.app import run_app
 import streamlit as st
 
@@ -25,6 +25,7 @@ def render_selector_tab():
     elif predictor_choice == "Weight Predictor":
         st.header("🏋️ Predict Weight")
         st.write("Use your height and gender to predict weight (numeric regression).")
+
         run_app2()
 
     
