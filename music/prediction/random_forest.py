@@ -1,9 +1,7 @@
 """
 Random Forest prediction module for music preferences.
 """
-import os
 import pandas as pd
-import streamlit as st
 import logging
 import joblib
 from typing import Dict, Any, Optional
@@ -12,32 +10,10 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 
 from .train_rf import train_and_save_model
+from music.core import check_model_files
 
 # Setup module logger
 logger = logging.getLogger(__name__)
-
-
-def check_saved_model_files():
-    """
-    Check if saved model files exist and return the latest ones.
-
-    Returns:
-        tuple: (model_path, encoder_path) or (None, None) if not found
-    """
-    config = st.session_state.config
-    models_dir = config['model']['models_dir']
-
-    if os.path.exists(models_dir):
-        model_files = [f for f in os.listdir(models_dir) if f.startswith('music_preferences_model_')]
-        encoder_files = [f for f in os.listdir(models_dir) if f.startswith('label_encoder_')]
-
-        if model_files and encoder_files:
-            latest_model = sorted(model_files)[-1]
-            latest_encoder = sorted(encoder_files)[-1]
-            return os.path.join(models_dir, latest_model), os.path.join(models_dir, latest_encoder)
-
-    return None, None
-
 
 def predict_using_ml(data: Optional[pd.DataFrame], age: int, gender: int,
                      trained_model: RandomForestClassifier = None,
@@ -61,7 +37,7 @@ def predict_using_ml(data: Optional[pd.DataFrame], age: int, gender: int,
             logger.info("No model provided, attempting to load or train...")
 
             # Try to load from disk
-            model_path, encoder_path = check_saved_model_files()
+            model_path, encoder_path = check_model_files(return_full_paths=True)
 
             if model_path and encoder_path:
                 logger.info(f"Loading model from {model_path} and encoder from {encoder_path}")

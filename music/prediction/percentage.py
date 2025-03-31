@@ -6,7 +6,6 @@ import streamlit as st
 import logging
 from typing import Dict, Any
 
-# Setup module logger
 logger = logging.getLogger(__name__)
 
 def determine_age_group(age: int) -> str:

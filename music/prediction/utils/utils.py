@@ -1,17 +1,10 @@
-"""
-Model training module for the music preference predictor.
-"""
 import os
-import pandas as pd
 import numpy as np
 import streamlit as st
-import logging
-import joblib
 from datetime import datetime
-from typing import Tuple, Optional, Dict, Any
+from typing import Dict, Any
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     confusion_matrix, classification_report,
     accuracy_score, precision_score, recall_score, f1_score
@@ -20,8 +13,8 @@ from sklearn.tree import export_graphviz, plot_tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from matplotlib.backends.backend_pdf import PdfPages
+import logging
 
-# Setup module logger
 logger = logging.getLogger(__name__)
 
 def export_tree_visualization(model, feature_names, class_names, timestamp):
@@ -339,91 +332,3 @@ def generate_training_report(
         "precision_weighted": precision_weighted,
         "recall_weighted": recall_weighted
     }
-
-def train_and_save_model(df: pd.DataFrame, save_model: bool = True
-                        ) -> Optional[Tuple[RandomForestClassifier, LabelEncoder]]:
-    """
-    Train a model from a DataFrame and optionally save it to disk.
-    Also generates and saves a comprehensive training report.
-
-    Args:
-        df (pd.DataFrame): DataFrame with music preference data
-        save_model (bool): Flag to save the model to disk
-
-    Returns:
-        Optional[Tuple[RandomForestClassifier, LabelEncoder]]: Trained model and label encoder
-    """
-    try:
-        # Get config from session state
-        config = st.session_state.config
-
-        # Determine the genre column name (could be 'genre' or 'music_preference')
-        genre_column = 'genre' if 'genre' in df.columns else 'music_preference'
-
-        logger.info(f"Training model using '{genre_column}' as target column")
-
-        # Prepare data
-        X = df[['age', 'gender']].values
-        y = df[genre_column].values
-
-        # Encode target variable
-        le = LabelEncoder()
-        y_encoded = le.fit_transform(y)
-        logger.info(f"Labels encoded. Unique genres: {list(le.classes_)}")
-
-        # Split data into training and testing sets
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y_encoded, test_size=0.2, random_state=config['model']['random_state']
-        )
-
-        # Train model
-        model = RandomForestClassifier(
-            n_estimators=config['model']['n_estimators'],
-            random_state=config['model']['random_state']
-        )
-        model.fit(X_train, y_train)
-        logger.info("Model training complete")
-
-        # Generate timestamp for file naming
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        # Generate training report
-        report = generate_training_report(
-            model, X_train, X_test, y_train, y_test, le, timestamp
-        )
-
-        logger.info(f"Model accuracy: {report['accuracy']:.4f}")
-        logger.info(f"F1 score (weighted): {report['f1_weighted']:.4f}")
-
-        if save_model:
-            models_dir = config['model']['models_dir']
-            os.makedirs(models_dir, exist_ok=True)
-
-            # Save using joblib as in original code
-            model_path = os.path.join(models_dir, f'music_preferences_model_{timestamp}.joblib')
-            encoder_path = os.path.join(models_dir, f'label_encoder_{timestamp}.joblib')
-
-            joblib.dump(model, model_path)
-            joblib.dump(le, encoder_path)
-
-            logger.info(f"Model saved to: {model_path}")
-            logger.info(f"Label encoder saved to: {encoder_path}")
-
-            # Verify files exist
-            assert os.path.exists(model_path), f"Model file not found at {model_path}"
-            assert os.path.exists(encoder_path), f"Encoder file not found at {encoder_path}"
-
-            logger.info("File verification successful")
-
-        # Save report info in session state for easy access
-        if 'training_report' not in st.session_state:
-            st.session_state['training_report'] = {}
-
-        st.session_state['training_report'] = report
-
-        return model, le
-    except Exception as e:
-        logger.error(f"Error in training model: {str(e)}", exc_info=True)
-        import traceback
-        traceback.print_exc()
-        return None

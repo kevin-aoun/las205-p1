@@ -54,7 +54,6 @@ def main():
     if uploaded_file is not None and not st.session_state.get('file_processed'):
         try:
             df = pd.read_csv(uploaded_file)
-            logger.info(f"File uploaded: {uploaded_file.name}, {df.shape[0]} rows")
 
             if config['data']['save_uploads']:
                 save_path = save_uploaded_file(uploaded_file)
@@ -119,8 +118,6 @@ def main():
                 st.info("Based on ML Model")
                 st.write(f"Predicted Weight: {ml_result['Weight']} kg")
                 st.write(f"Confidence: {ml_result['confidence']:.2f}%")
-
-            logger.info(f"Predictions displayed for height={height}, gender={gender_value}")
 
 if __name__ == "__main__":
     logger.info("Weight predictor app started")
