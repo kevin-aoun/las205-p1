@@ -3,10 +3,10 @@ import logging
 import streamlit as st
 import os
 
-from music.logs import setup_logging
-from music.core import ensure_directories
+from music_new.logs import setup_logging
+from music_new.core import ensure_directories
 
-logger = logging.getLogger('music_preference_predictor')
+logger = logging.getLogger('weight_predictor')
 
 def create_default_config():
     """
@@ -26,13 +26,13 @@ def create_default_config():
         'data': {
             'save_uploads': True,
             'uploads_dir': 'uploads',
-            'age_bins': [0, 25, 31, 999],
-            'age_labels': ['young', 'mid', 'older']
+            'height_bins': [0, 25, 31, 999],
+            'height_labels': ['young', 'mid', 'older']
         },
         'app': {
-            'title': 'Music Preference Predictor',
-            'default_age': 25,
-            'age_range': [0, 100]
+            'title': 'Height Predictor',
+            'default_height': 100,
+            'height_range': [0, 200]
         },
         'logging': {
             'level': 'INFO',
@@ -44,7 +44,7 @@ def create_default_config():
 
     return default_config
 
-def save_config_to_file(config_dict, config_path="music/config.yaml"):
+def save_config_to_file(config_dict, config_path="music_new/config.yaml"):
     """
     Save configuration to file.
 
@@ -65,7 +65,7 @@ def save_config_to_file(config_dict, config_path="music/config.yaml"):
         return False
 
 
-def load_config_from_file(config_path="music/config.yaml"):
+def load_config_from_file(config_path="music_new/config.yaml"):
     """
     Load configuration from file or create default if file doesn't exist.
 
@@ -153,4 +153,5 @@ def init_config():
         setup_logging(config)
 
         st.session_state.config = config
+
    
