@@ -1,9 +1,10 @@
 import streamlit as st
 import pandas as pd
+import os
 
-from music.core import logger, save_uploaded_file
+from music.core import save_uploaded_file
+from music.logs import logger
 from music.prediction import train_and_save_model
-
 
 def render_data_model_tab(model_exists, latest_model):
     """
@@ -20,6 +21,8 @@ def render_data_model_tab(model_exists, latest_model):
         st.session_state['use_existing_clicked'] = False
     if 'train_new_clicked' not in st.session_state:
         st.session_state['train_new_clicked'] = False
+    if 'selected_model' not in st.session_state:
+        st.session_state['selected_model'] = latest_model
 
     col1, col2 = st.columns(2)
 
@@ -32,21 +35,29 @@ def render_data_model_tab(model_exists, latest_model):
             st.error("CSV upload is mandatory. Please upload a file to continue.")
 
     with col2:
-        st.subheader("Model Status")
+        st.subheader("Model Selection")
         if model_exists:
-            st.success(f"Using saved model: {latest_model}")
+            # Get all available models
+            models_dir = config['model']['models_dir']
+            available_models = []
+            if os.path.exists(models_dir):
+                model_files = [f for f in os.listdir(models_dir)
+                               if f.startswith('music_preferences_model_') and
+                               (f.endswith('.joblib') or f.endswith('.pkl'))]
+                available_models = sorted(model_files, reverse=True)
 
-            # Button callback
-            def on_load_model_click():
-                st.session_state['model_trained'] = True
+            if available_models:
+                # Create a dropdown to select from available models
+                selected_model = st.selectbox(
+                    "Select a saved model",
+                    options=available_models,
+                    index=0 if latest_model in available_models else 0
+                )
 
-            if st.button("Load saved model", key="load_model_button", on_click=on_load_model_click):
-                # This code won't execute immediately - the callback will be called first
-                pass
-
-            # Show success message if model was loaded
-            if st.session_state.get('model_trained', False):
-                st.success("Saved model loaded successfully")
+                st.session_state['selected_model'] = selected_model
+                st.success(f"Selected model: {selected_model}")
+            else:
+                st.warning("No saved models found.")
 
     # Process uploaded file if it exists
     if uploaded_file is not None:
@@ -90,7 +101,6 @@ def render_data_model_tab(model_exists, latest_model):
 
     # Only show data preview and model options if we have data
     if 'current_data' in st.session_state and st.session_state['current_data'] is not None:
-        # Display data preview
         st.subheader("Data Preview")
         st.dataframe(st.session_state['current_data'].head())
 
@@ -100,7 +110,8 @@ def render_data_model_tab(model_exists, latest_model):
 
         # Check for button actions after rendering
         if st.session_state['use_existing_clicked']:
-            st.success("Using existing model with new data")
+            selected_model = st.session_state.get('selected_model', latest_model)
+            st.success(f"Using selected model: {selected_model} with the new data")
             # Reset so we don't show the message again on rerender
             st.session_state['use_existing_clicked'] = False
 
@@ -124,7 +135,8 @@ def handle_model_training(model_exists):
     """
     if model_exists:
         st.subheader("Model Training Options")
-        st.info("A saved model exists. You can use it or train a new model with the uploaded data.")
+        selected_model = st.session_state.get('selected_model', "None")
+        st.info(f"Would you like to use the selected model '{selected_model}' or train a new model with the uploaded data?")
 
         col1, col2 = st.columns(2)
 
@@ -133,12 +145,16 @@ def handle_model_training(model_exists):
             st.session_state['file_processed'] = True
             st.session_state['model_trained'] = True
             st.session_state['use_existing_clicked'] = True
+            # Reset the newly trained model flag
+            st.session_state['using_newly_trained_model'] = False
 
         def train_new_callback():
             st.session_state['train_new_clicked'] = True
+            # Set a flag to indicate we'll be using a newly trained model
+            st.session_state['using_newly_trained_model'] = True
 
         with col1:
-            st.button("Use existing model", key="use_model_button", on_click=use_existing_callback)
+            st.button("Use selected model", key="use_model_button", on_click=use_existing_callback)
 
         with col2:
             st.button("Train new model", key="train_new_button", on_click=train_new_callback)
@@ -148,8 +164,9 @@ def handle_model_training(model_exists):
         st.info("No existing model found. Training a new model...")
         # Set processed flag to avoid retraining
         st.session_state['file_processed'] = True
+        # Set the flag to use a newly trained model
+        st.session_state['using_newly_trained_model'] = True
         train_model(st.session_state['current_data'])
-
 
 def train_model(df):
     """
@@ -170,6 +187,7 @@ def train_model(df):
                 st.session_state['model_trained'] = True
                 st.session_state['file_processed'] = True
                 st.session_state['show_training_report'] = True
+                st.session_state['using_newly_trained_model'] = True
 
                 if config['model']['save_model']:
                     st.success("New model trained and saved successfully")

@@ -9,7 +9,7 @@ data:
   - 0
   - 25
   - 31
-  - 999
+  - 99
   age_labels:
   - young
   - mid

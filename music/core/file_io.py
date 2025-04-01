@@ -1,9 +1,6 @@
 import os
-import logging
 import streamlit as st
-
-logger = logging.getLogger(__name__)
-
+from music.logs import logger
 
 def get_absolute_path(relative_path):
     """Convert relative path to absolute path based on the music directory"""
@@ -49,7 +46,7 @@ def save_uploaded_file(uploaded_file):
     return file_path
 
 
-def check_model_files(return_full_paths=False):
+def return_latest_model(return_full_paths=False):
     """Check for saved model files and return latest model or path(s)"""
     config = st.session_state.config
     models_dir = config['model']['models_dir']

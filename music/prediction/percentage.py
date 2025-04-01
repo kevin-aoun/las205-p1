@@ -3,10 +3,8 @@ Percentage-based prediction module for music preferences.
 """
 import pandas as pd
 import streamlit as st
-import logging
 from typing import Dict, Any
-
-logger = logging.getLogger(__name__)
+from music.logs import logger
 
 def determine_age_group(age: int) -> str:
     """
@@ -68,12 +66,9 @@ def predict_using_percentage(data: pd.DataFrame, age: int, gender: int) -> Dict[
 
         logger.info(f"Filtered by age group '{age_group}': {len(filtered_data)} rows")
 
-        # Determine the genre column name (could be 'genre' or 'music_preference')
-        genre_column = 'genre' if 'genre' in filtered_data.columns else 'music_preference'
-
         # Count genres
         if len(filtered_data) > 0:
-            genre_counts = filtered_data[genre_column].value_counts()
+            genre_counts = filtered_data['genre'].value_counts() # k: genre, v: count
             total_count = len(filtered_data)
 
             # Calculate percentages for all genres

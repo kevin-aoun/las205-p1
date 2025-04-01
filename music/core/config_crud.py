@@ -4,9 +4,7 @@ import streamlit as st
 import os
 
 from music.logs import setup_logging
-from music.core import ensure_directories
-
-logger = logging.getLogger('music_preference_predictor')
+from music.core import ensure_directories, logger
 
 def create_default_config():
     """
@@ -153,4 +151,3 @@ def init_config():
         setup_logging(config)
 
         st.session_state.config = config
-   

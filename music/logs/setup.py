@@ -2,8 +2,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 # Create a consistent, application-wide logger
-logger = logging.getLogger('music_preference_predictor')
-
+logger = logging.getLogger(__name__)
 
 def setup_logging(config_dict):
     """

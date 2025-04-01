@@ -1,32 +1,28 @@
 import streamlit as st
 import pandas as pd
 
-def display_percentage_results(percentage_result):
-    """
-    Display all the percentages from the percentage-based prediction.
+def display_prediction_result(result):
+    """Display prediction results in a consistent format for both methods"""
+    st.write(f"**Predicted Genre:** {result['genre']}")
+    st.write(f"**Confidence:** {result['confidence']:.2f}%")
 
-    Args:
-        percentage_result (dict): Result from predict_using_percentage
-    """
-    st.write(f"**Predicted Genre:** {percentage_result['genre']}")
-    st.write(f"**Top Confidence:** {percentage_result['confidence']:.2f}%")
+    # Display all percentages/probabilities if available
+    percentages = result.get('all_percentages') or result.get('probabilities')
+    if percentages:
+        st.write("**All Percentages:**")
 
-    # If we have all percentages, display them as a table
-    if 'all_percentages' in percentage_result and percentage_result['all_percentages']:
-        st.write("**All Genre Percentages:**")
+        # Get values and sort
+        labels = list(percentages.keys())
+        values = [percentages[label] * 100 if percentages[label] <= 1 else percentages[label] for label in labels]
 
-        # Get the percentages
-        genres = list(percentage_result['all_percentages'].keys())
-        percentages = list(percentage_result['all_percentages'].values())
-
-        # Sort by percentage (descending)
-        sorted_indices = sorted(range(len(percentages)), key=lambda i: percentages[i], reverse=True)
-        sorted_genres = [genres[i] for i in sorted_indices]
-        sorted_percentages = [percentages[i] for i in sorted_indices]
+        # Sort by value (descending)
+        sorted_indices = sorted(range(len(values)), key=lambda i: values[i], reverse=True)
+        sorted_labels = [labels[i] for i in sorted_indices]
+        sorted_values = [values[i] for i in sorted_indices]
 
         # Create and display the table
-        percentage_df = pd.DataFrame({
-            'Genre': sorted_genres,
-            'Percentage': [f"{p:.2f}%" for p in sorted_percentages]
+        data_df = pd.DataFrame({
+            'Genre': sorted_labels,
+            'Percentage': [f"{v:.2f}%" for v in sorted_values]
         })
-        st.dataframe(percentage_df, use_container_width=True)
+        st.dataframe(data_df, use_container_width=True)

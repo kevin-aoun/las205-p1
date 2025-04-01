@@ -2,93 +2,123 @@
 Random Forest prediction module for music preferences.
 """
 import pandas as pd
-import logging
 import joblib
-from typing import Dict, Any, Optional
+import os
+import streamlit as st
+from typing import Dict, Optional
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 
 from .train_rf import train_and_save_model
-from music.core import check_model_files
+from music.core import return_latest_model
+from music.logs import logger
 
-# Setup module logger
-logger = logging.getLogger(__name__)
-
-def predict_using_ml(data: Optional[pd.DataFrame], age: int, gender: int,
-                     trained_model: RandomForestClassifier = None,
-                     label_encoder: LabelEncoder = None) -> Dict[str, Any]:
+def predict_using_ml(
+        data: Optional[pd.DataFrame],
+        age: int,
+        gender_value: int,
+        trained_model: Optional[RandomForestClassifier]=None,
+        label_encoder: Optional[LabelEncoder]=None,
+        model_filename: Optional[str]=None):
     """
     Predict music genre preference using machine learning.
 
     Args:
-        data (pd.DataFrame, optional): Dataset for training if model not provided
+        data (pd.DataFrame, optional): Dataset to use if new model needs to be trained
         age (int): User's age
-        gender (int): User's gender (1 for male, 0 for female)
-        trained_model (RandomForestClassifier, optional): Pre-trained model
-        label_encoder (LabelEncoder, optional): Fitted label encoder
+        gender_value (int): User's gender (1 for male, 0 for female)
+        trained_model: Pre-loaded model (optional)
+        label_encoder: Pre-loaded label encoder (optional)
+        model_filename (str, optional): Specific model filename to load from disk
 
     Returns:
-        Dict[str, Any]: Dictionary with predicted genre and confidence
+        Dict: Dictionary with prediction results
     """
     try:
-        # If model or encoder not provided, try to load them
-        if trained_model is None or label_encoder is None:
-            logger.info("No model provided, attempting to load or train...")
+        # If model and encoder are provided directly, use them
+        if trained_model is not None and label_encoder is not None:
+            logger.info("Using provided in-memory model for prediction")
+        else:
+            # Load a model from disk
+            if model_filename:
+                # Load the specific model requested
+                logger.info(f"Loading specific model from disk: {model_filename}")
+                models_dir = st.session_state.config['model']['models_dir']
+                model_path = os.path.join(models_dir, model_filename)
 
-            # Try to load from disk
-            model_path, encoder_path = check_model_files(return_full_paths=True)
+                # Find matching encoder with same timestamp
+                import re
+                timestamp_match = re.search(r'model_(\d+_\d+)', model_filename)
+                if timestamp_match:
+                    timestamp = timestamp_match.group(1)
+                    encoder_filename = f"label_encoder_{timestamp}.joblib"
+                    encoder_path = os.path.join(models_dir, encoder_filename)
 
-            if model_path and encoder_path:
-                logger.info(f"Loading model from {model_path} and encoder from {encoder_path}")
-                try:
-                    trained_model = joblib.load(model_path)
-                    label_encoder = joblib.load(encoder_path)
-                except Exception as load_err:
-                    logger.error(f"Error loading saved model: {load_err}", exc_info=True)
-                    trained_model, label_encoder = None, None
+                    if os.path.exists(model_path) and os.path.exists(encoder_path):
+                        try:
+                            trained_model = joblib.load(model_path)
+                            label_encoder = joblib.load(encoder_path)
+                            logger.info(f"Successfully loaded model: {model_filename}")
+                        except Exception as e:
+                            logger.error(f"Error loading model files: {str(e)}")
+                            raise
+                    else:
+                        logger.warning(f"Model or encoder file not found for {model_filename}")
+            else:
+                # No specific model requested, load the latest one
+                logger.info("No specific model requested, loading latest model")
+                model_path, encoder_path = return_latest_model()
 
-            # If still no model and we have data, train a new one
+                if model_path and encoder_path:
+                    try:
+                        trained_model = joblib.load(model_path)
+                        label_encoder = joblib.load(encoder_path)
+                        logger.info(f"Loaded latest model from: {model_path}")
+                    except Exception as e:
+                        logger.error(f"Error loading latest model: {str(e)}")
+                        raise
+
+            # If no model loaded or found, train a new one if data is provided
             if (trained_model is None or label_encoder is None) and data is not None:
-                logger.info("Training new model with provided data")
-                result = train_and_save_model(data)
-                if result:
-                    trained_model, label_encoder = result
-            elif trained_model is None or label_encoder is None:
-                logger.warning("No model available and no data provided")
-                return {
-                    "genre": "No model available and no data provided",
-                    "confidence": 0
-                }
+                logger.info("No model loaded, training new model with provided data")
+                trained_model, label_encoder = train_and_save_model(data)
 
-        # Make prediction
-        logger.info(f"Preparing prediction for input: age={age}, gender={gender}")
-        user_data = pd.DataFrame([[age, gender]], columns=['age', 'gender'])
+        # Check if we have a valid model and encoder at this point
+        if trained_model is None or label_encoder is None:
+            return {
+                "genre": "No model available",
+                "confidence": 0,
+                "probabilities": {}
+            }
 
-        logger.info("Applying model to user data")
+        # Make prediction with the model
+        logger.info(f"Making prediction for age={age}, gender={gender_value}")
+        user_data = pd.DataFrame([[age, gender_value]], columns=['age', 'gender'])
+
         prediction_encoded = trained_model.predict(user_data)[0]
         prediction_proba = trained_model.predict_proba(user_data)[0]
 
-        logger.info(f"Raw prediction (encoded): {prediction_encoded}")
         predicted_genre = label_encoder.inverse_transform([prediction_encoded])[0]
 
-        # Get all probabilities for debugging
-        class_probabilities = {
-            label_encoder.inverse_transform([i])[0]: f"{prediction_proba[i] * 100:.2f}%"
-            for i in range(len(prediction_proba))
-        }
-        logger.info(f"Class probabilities: {class_probabilities}")
+        # Get all class probabilities
+        probabilities = {}
+        for i, prob in enumerate(prediction_proba):
+            genre = label_encoder.inverse_transform([i])[0]
+            probabilities[genre] = prob
 
         confidence = prediction_proba[prediction_encoded] * 100
-        logger.info(f"Final prediction: {predicted_genre} with {confidence:.2f}% confidence")
 
+        # Return detailed prediction result
         return {
             "genre": predicted_genre,
-            "confidence": confidence
+            "confidence": confidence,
+            "probabilities": probabilities
         }
     except Exception as e:
         logger.error(f"Error in ML prediction: {str(e)}", exc_info=True)
         return {
-            "genre": f"Error in ML prediction: {str(e)}",
-            "confidence": 0
+            "genre": f"Error: {str(e)}",
+            "confidence": 0,
+            "probabilities": {}
         }

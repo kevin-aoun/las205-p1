@@ -5,7 +5,6 @@ import os
 import pandas as pd
 
 import streamlit as st
-import logging
 import joblib
 from datetime import datetime
 from typing import Tuple, Optional
@@ -14,8 +13,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 
 from music.prediction.utils import generate_training_report
-
-logger = logging.getLogger(__name__)
+from music.logs import logger
 
 def train_and_save_model(df: pd.DataFrame, save_model: bool = True
                         ) -> Optional[Tuple[RandomForestClassifier, LabelEncoder]]:
@@ -52,7 +50,7 @@ def train_and_save_model(df: pd.DataFrame, save_model: bool = True
 
         logger.info("Starting model training")
 
-        model.fit(X_train, y_train)
+        model.fit(X_train, y_train) # training step
         logger.info("Model training complete")
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

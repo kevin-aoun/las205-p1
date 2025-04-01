@@ -1,1 +1,1 @@
-from .utils import display_percentage_results
+from .utils import display_prediction_result
