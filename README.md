@@ -202,7 +202,7 @@ The sidebar allows customizing application settings.
 ### Expected Directory Structure
 
 ```
-music-preference-predictor/
+root/
 ├── main.py
 ├── requirements.txt
 ├── music/
@@ -210,8 +210,8 @@ music-preference-predictor/
 │   │   ├── __init__.py
 │   │   ├── app.py
 │   │   ├── config_sidebar.py
-│   │   ├── visualizations.py
-│   │   ├── utils.py
+│   │   ├── utils
+|   |   |   └── utils.py
 │   │   └── tabs/
 │   │       ├── __init__.py
 │   │       ├── data_model_tab.py
