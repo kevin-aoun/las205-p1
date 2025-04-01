@@ -241,7 +241,7 @@ music-preference-predictor/
 2. Upload a CSV file with columns for:
    - `age`: Numeric
    - `gender`: 0 for Female, 1 for Male
-   - `genre` or `music_preference`: Music genre category
+   - `genre`: Music genre category
 3. Choose whether to use an existing model or train a new one
 4. Navigate to the Prediction tab to make predictions
 5. Explore the Training Report and Data Exploration tabs
