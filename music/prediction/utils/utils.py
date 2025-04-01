@@ -38,7 +38,7 @@ def export_tree_visualization(model, feature_names, class_names, timestamp):
         estimator = model.estimators_[0]
 
         # Path for PNG output
-        tree_png_path = os.path.join(reports_dir, f'tree_viz_{timestamp}.png')
+        tree_png_path = os.path.join(reports_dir, f'training_report_{timestamp}_tree_viz.png')
 
         # Create the visualization using plot_tree
         plt.figure(figsize=(20, 10))

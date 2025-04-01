@@ -5,7 +5,6 @@ import re
 import matplotlib.image as mpimg
 import pandas as pd
 
-
 def render_report_tab(model_exists):
     """
     Render the Training Report tab
@@ -79,7 +78,7 @@ def display_training_report(selected_model=None):
         cm_files = [f for f in os.listdir(reports_dir) if f.endswith('_confusion_matrix.png')]
         fi_files = [f for f in os.listdir(reports_dir) if f.endswith('_feature_importance.png')]
         json_files = [f for f in os.listdir(reports_dir) if f.endswith('_report.json')]
-        tree_files = [f for f in os.listdir(reports_dir) if f.startswith('tree_viz_')]
+        tree_files = [f for f in os.listdir(reports_dir) if f.endswith('_tree_viz.png')]
         pdf_files = [f for f in os.listdir(reports_dir) if f.endswith('.pdf')]
 
         # Display metrics in tables
