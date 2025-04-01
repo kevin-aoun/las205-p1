@@ -77,7 +77,7 @@ This tab handles data upload and model selection/training.
 - When a model is trained: `using_newly_trained_model = True`
 - When existing model is selected: `using_newly_trained_model = False`
 
-![](assets\data_and_models.png)
+![](assets/data_and_models.png)
 
 ### 2. Prediction Tab
 
@@ -95,7 +95,7 @@ This tab allows users to input their age and gender to receive music genre predi
 - **Percentage-based:** Analysis of similar users in the dataset
 - **Machine Learning:** Random Forest classifier predictions
 
-![](assets\predictions.png)
+![](assets/predictions.png)
 
 ### 3. Training Report Tab
 
@@ -114,8 +114,8 @@ This tab displays detailed metrics and visualizations of model performance.
 - For newly trained models, displays most recent report 
 - For selected existing models, displays matching report
 
-![](\assets\training_report_1.png)
-![](\assets\training_report_2.png)
+![](assets/training_report_1.png)
+![](assets/training_report_2.png)
 
 
 ### 4. Explore Data Tab
@@ -130,8 +130,8 @@ This tab enables interactive exploration of the dataset.
   - Combined analysis (heatmaps and comparisons)
 - Raw data view option
 
-![](\assets\explore_data_1.png)
-![](\assets\explore_data_2.png)
+![](assets/explore_data_1.png)
+![](assets/explore_data_2.png)
 
 ### 5. Configuration Sidebar
 
@@ -149,7 +149,7 @@ The sidebar allows customizing application settings.
 - **Logging Settings:**
   - Logging level
 
-![](C:\Users\kevin\Documents\LAU\4th year\Spring 2025\Digital Cultures\P1\assets\sidebar_config.png)
+![](assets/sidebar_config.png)
 
 ## Installation & Getting Started
 
