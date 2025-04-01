@@ -44,7 +44,7 @@ def create_default_config():
 
     return default_config
 
-def save_config_to_file(config_dict, config_path="music_new/config.yaml"):
+def save_config_to_file(config_dict, config_path="weight/config.yaml"):
     """
     Save configuration to file.
 
@@ -65,7 +65,7 @@ def save_config_to_file(config_dict, config_path="music_new/config.yaml"):
         return False
 
 
-def load_config_from_file(config_path="music_new/config.yaml"):
+def load_config_from_file(config_path="weight/config.yaml"):
     """
     Load configuration from file or create default if file doesn't exist.
 

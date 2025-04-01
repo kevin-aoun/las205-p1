@@ -26,7 +26,7 @@ def render_explore_tab():
     filter_container = st.container()
 
     with filter_container:
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
 
         with col2:
             min_height = int(df['Height'].min())
@@ -46,21 +46,25 @@ def render_explore_tab():
                 default=all_genders,
                 format_func=lambda x: "Male" if x == 1 else "Female"
             )
+        with col2:
+            min_weight = int(df['Weight'].min())
+            max_weight = int(df['Weight'].max())
+            weight_range = st.slider(
+                "Weight Range",
+                min_value=min_weight,
+                max_value=max_weight,
+                value=(min_weight, max_weight)
+            )
 
-        # Weight filter
-        all_weights = sorted(df[weight_column].unique())
-        selected_weights = st.multiselect(
-            "Weight",
-            options=all_weights,
-            default=all_weights
-        )
+   
 
     # Apply filters
     filtered_df = df[
         (df['Height'] >= height_range[0]) &
         (df['Height'] <= height_range[1]) &
         (df['Gender'].isin(selected_genders)) &
-        (df[weight_column].isin(selected_weights))
+         (df['Weight'] >= weight_range[0]) &
+        (df['Weight'] <= weight_range[1]) 
     ]
 
     st.write(f"Filtered data: {len(filtered_df)} records")

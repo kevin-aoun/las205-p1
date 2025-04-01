@@ -94,7 +94,7 @@ def generate_training_report(
         plt.figure(figsize=(10, 6))
         plt.title('Feature Coefficients')
         plt.bar(range(len(coefs)), coefs[indices], align='center')
-        plt.xticks(range(len(coefs)), [feature_names[i] for i in indices], rotation=45)
+        plt.xticks(range(len(coefs)), ["Height", "Gender"], rotation=45)
         plt.xlabel('Features')
         plt.ylabel('Coefficient Value')
         coef_plot_path = f"{base_path}_coefficients.png"
