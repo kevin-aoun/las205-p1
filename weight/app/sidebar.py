@@ -28,11 +28,7 @@ def render_config_sidebar():
         "Use saved models",
         value=current_config['model']['use_saved_model']
     )
-    updated_config['model']['n_estimators'] = st.sidebar.slider(
-        "Number of estimators",
-        10, 500,
-        value=current_config['model']['n_estimators']
-    )
+
 
     # Data settings section
     st.sidebar.subheader("Data Settings")
@@ -46,8 +42,8 @@ def render_config_sidebar():
     updated_config['app']['default_height'] = st.sidebar.number_input(
         "Default height",
         min_value=0,
-        max_value=100,
-        value = current_config['app'].get('default_height', 100)
+        max_value=220,
+        value = current_config['app'].get('default_height', 160)
     )
 
     # Logging settings section

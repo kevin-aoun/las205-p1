@@ -20,19 +20,19 @@ def create_default_config():
             'save_model': True,
             'models_dir': 'models',
             'use_saved_model': True,
-            'n_estimators': 100,
+          
             'random_state': 42
         },
         'data': {
             'save_uploads': True,
             'uploads_dir': 'uploads',
-            'height_bins': [0, 25, 31, 999],
-            'height_labels': ['young', 'mid', 'older']
+            'height_bins': [0, 160, 180, 999],
+            'height_labels': ['short', 'mid', 'tall']
         },
         'app': {
             'title': 'Height Predictor',
-            'default_height': 100,
-            'height_range': [0, 200]
+            'default_height': 160,
+            'height_range': [0, 220]
         },
         'logging': {
             'level': 'INFO',

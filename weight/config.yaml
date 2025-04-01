@@ -1,19 +1,19 @@
 app:
   height_range:
   - 0
-  - 200
-  default_height: 100
+  - 220
+  default_height: 160
   title: Height Predictor
 data:
   height_bins:
   - 0
-  - 25
-  - 31
+  - 160
+  - 180
   - 999
   height_labels:
-  - young
+  - short
   - mid
-  - older
+  - tall
   save_uploads: true
   uploads_dir: uploads
 logging:
@@ -23,7 +23,7 @@ logging:
   level: INFO
 model:
   models_dir: models
-  n_estimators: 100
+
   random_state: 42
   save_model: true
   use_saved_model: true

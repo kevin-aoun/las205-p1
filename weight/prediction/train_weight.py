@@ -10,7 +10,8 @@ from datetime import datetime
 from typing import Tuple, Optional
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_squared_error, r2_score, classification_report
+from weight.prediction.utils import generate_training_report
 
 logger = logging.getLogger(__name__)
 
@@ -51,14 +52,18 @@ def train_and_save_model(df: pd.DataFrame, save_model: bool = True
 
         mse = mean_squared_error(y_test, y_pred)
         r2 = r2_score(y_test, y_pred)
-
+     
         logger.info(f"Mean Squared Error: {mse:.4f}")
         logger.info(f"R² Score: {r2:.4f}")
-
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        report = generate_training_report(
+            model, X_train, X_test, y_train, y_test, timestamp
+        )
         # Save report in session state
         st.session_state['training_report'] = {
             'mean_squared_error': mse,
-            'r2_score': r2
+            'r2_score': r2,
+            'report': report
         }
 
         if save_model:

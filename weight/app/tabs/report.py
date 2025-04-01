@@ -1,9 +1,9 @@
 import streamlit as st
 import os
 import json
+import re
 import matplotlib.image as mpimg
 import pandas as pd
-
 
 def render_report_tab(model_exists):
     """
@@ -12,15 +12,25 @@ def render_report_tab(model_exists):
     Args:
         model_exists (bool): Whether a usable model exists
     """
+    # Check if we've just trained a new model
+    using_newly_trained = st.session_state.get('using_newly_trained_model', False)
+
     if st.session_state.get('show_training_report', False) or model_exists:
-        display_training_report()
+        if using_newly_trained:
+            display_training_report()
+        else:
+            selected_model = st.session_state.get('selected_model')
+            display_training_report(selected_model)
     else:
         st.info("No training reports available. Train a model first to see the training report.")
 
 
-def display_training_report():
+def display_training_report(selected_model=None):
     """
-    Display the most recent training report if it exists.
+    Display the training report for the selected model
+
+    Args:
+        selected_model (str, optional): The selected model filename
     """
     config = st.session_state.config
     models_dir = config['model']['models_dir']
@@ -30,108 +40,156 @@ def display_training_report():
         st.info("No training reports available.")
         return
 
-    # Find the most recent report files
+    # Try to find report files
     metric_files = [f for f in os.listdir(reports_dir) if f.endswith('_metrics.txt')]
-    cm_files = [f for f in os.listdir(reports_dir) if f.endswith('_confusion_matrix.png')]
-    fi_files = [f for f in os.listdir(reports_dir) if f.endswith('_feature_importance.png')]
-    json_files = [f for f in os.listdir(reports_dir) if f.endswith('_report.json')]
-    pdf_files = [f for f in os.listdir(reports_dir) if f.endswith('.pdf')]
 
-    if not metric_files or not json_files:
+    if not metric_files:
         st.info("No training reports available.")
         return
 
-    # Get the most recent files
-    latest_metrics = sorted(metric_files)[-1]
-    latest_json = sorted(json_files)[-1]
-    latest_timestamp = latest_metrics.replace('_metrics.txt', '')
+    try:
+        # If a specific model is selected, find its corresponding report
+        if selected_model:
+            # Extract timestamp from the model filename
+            # Assuming model names like 'regression_model_20250401_123456.joblib'
+            # Extract the '20250401_123456' part
+            timestamp_match = re.search(r'model_(\d+_\d+)', selected_model)
+            if timestamp_match:
+                model_timestamp = timestamp_match.group(1)
+                # Find reports matching this timestamp
+                matching_reports = [f for f in metric_files if model_timestamp in f]
+                if matching_reports:
+                    latest_metrics = matching_reports[0]
+                else:
+                    st.warning(f"No specific report found for model {selected_model}. Showing most recent report.")
+                    latest_metrics = sorted(metric_files)[-1]
+            else:
+                latest_metrics = sorted(metric_files)[-1]
+        else:
+            # No model specified, use the most recent report
+            latest_metrics = sorted(metric_files)[-1]
 
-    # Load JSON data for metrics table
-    with open(os.path.join(reports_dir, latest_json), 'r') as f:
-        report_data = json.load(f)
+        latest_timestamp = latest_metrics.replace('_metrics.txt', '')
 
-    # Display metrics in tables
-    st.subheader("Model Training Report")
+        # Check for report files: scatter, residuals, coefficients, json, pdf
+        scatter_files = [f for f in os.listdir(reports_dir) if f.endswith('_scatter.png')]
+        residual_files = [f for f in os.listdir(reports_dir) if f.endswith('_residuals.png')]
+        coef_files = [f for f in os.listdir(reports_dir) if f.endswith('_coefficients.png')]
+        json_files = [f for f in os.listdir(reports_dir) if f.endswith('_report.json')]
+        pdf_files = [f for f in os.listdir(reports_dir) if f.endswith('.pdf')]
 
-    # Add PDF download button
-    latest_pdf = [f for f in pdf_files if latest_timestamp.replace('_metrics.txt', '') in f]
-    if latest_pdf:
-        pdf_path = os.path.join(reports_dir, latest_pdf[0])
-        with open(pdf_path, "rb") as file:
-            pdf_data = file.read()
+        # Display metrics in tables
+        st.subheader("Regression Model Training Report")
 
-        st.download_button(
-            label="📥 Download PDF Report",
-            data=pdf_data,
-            file_name=os.path.basename(pdf_path),
-            mime="application/pdf"
-        )
+        if selected_model is None and st.session_state.get('using_newly_trained_model', False):
+            st.success("Viewing report for newly trained model")
+        elif selected_model:
+            st.info(f"Showing training report for model: {selected_model}")
 
-    # Display basic model information
-    st.write("### Model Information")
-    info_data = {
-        "Metric": ["Training Date", "Accuracy", "F1 Score (weighted)", "Precision (weighted)", "Recall (weighted)"],
-        "Value": [
-            report_data["timestamp"],
-            f"{report_data['accuracy']:.4f}",
-            f"{report_data['f1']['weighted']:.4f}",
-            f"{report_data['precision']['weighted']:.4f}",
-            f"{report_data['recall']['weighted']:.4f}"
-        ]
-    }
-    st.table(pd.DataFrame(info_data))
+        # Try to load JSON data if available
+        json_data_loaded = False
+        matching_json = [f for f in json_files if latest_timestamp in f]
 
-    # Display per-class metrics
-    st.write("### Per-Class Performance")
+        if matching_json:
+            json_path = os.path.join(reports_dir, matching_json[0])
+            try:
+                with open(json_path, 'r') as f:
+                    report_data = json.load(f)
+                json_data_loaded = True
 
-    class_data = []
-    for class_name, metrics in report_data["class_report"].items():
-        if class_name in ['accuracy', 'macro avg', 'weighted avg']:
-            continue
-        class_data.append({
-            "Class": class_name,
-            "Precision": f"{metrics['precision']:.4f}",
-            "Recall": f"{metrics['recall']:.4f}",
-            "F1 Score": f"{metrics['f1-score']:.4f}",
-            "Support": metrics['support']
-        })
+                # Add PDF download button if available
+                matching_pdf = [f for f in pdf_files if latest_timestamp in f]
+                if matching_pdf:
+                    pdf_path = os.path.join(reports_dir, matching_pdf[0])
+                    with open(pdf_path, "rb") as file:
+                        pdf_data = file.read()
+                    st.download_button(
+                        label="📥 Download PDF Report",
+                        data=pdf_data,
+                        file_name=os.path.basename(pdf_path),
+                        mime="application/pdf"
+                    )
 
-    st.table(pd.DataFrame(class_data))
+                # Display basic model information
+                st.write("### Model Information")
+                info_data = {
+                    "Metric": [
+                        "Training Date", "Model Type", 
+                        "Training Samples", "Testing Samples", 
+                        "MSE", "MAE", "R²"
+                    ],
+                    "Value": [
+                        report_data.get("timestamp", "N/A"),
+                        report_data.get("model_type", "N/A"),
+                        report_data.get("training_samples", "N/A"),
+                        report_data.get("testing_samples", "N/A"),
+                        f"{report_data.get('mse', 0):.4f}",
+                        f"{report_data.get('mae', 0):.4f}",
+                        f"{report_data.get('r2', 0):.4f}"
+                    ]
+                }
+                st.table(pd.DataFrame(info_data))
+            except Exception as e:
+                st.warning(f"Could not load detailed metrics data from JSON: {str(e)}")
+                json_data_loaded = False
 
-    # Display visualizations (excluding tree)
-    display_report_visualizations(reports_dir, cm_files, fi_files, latest_timestamp)
+        if not json_data_loaded:
+            st.info("Basic training report available. Detailed metrics might be missing.")
+            metrics_path = os.path.join(reports_dir, latest_metrics)
+            try:
+                with open(metrics_path, 'r') as f:
+                    metrics_content = f.read()
+                st.text(metrics_content)
+            except Exception as e:
+                st.warning(f"Could not load metrics file content: {str(e)}")
 
-    # Add full text metrics file
-    metrics_path = os.path.join(reports_dir, latest_metrics)
-    with open(metrics_path, 'r') as f:
-        metrics_content = f.read()
+        # Display visualizations
+        display_report_visualizations(reports_dir, scatter_files, residual_files, coef_files, latest_timestamp)
 
-    with st.expander("View Full Metrics Report"):
-        st.text(metrics_content)
+    except Exception as e:
+        st.error(f"Error displaying training report: {str(e)}")
 
 
-def display_report_visualizations(reports_dir, cm_files, fi_files, latest_timestamp):
+def display_report_visualizations(reports_dir, scatter_files, residual_files, coef_files, latest_timestamp):
     """
-    Display report visualizations (confusion matrix, feature importance only)
+    Display report visualizations
 
     Args:
         reports_dir (str): Directory containing report files
-        cm_files (list): List of confusion matrix files
-        fi_files (list): List of feature importance files
-        latest_timestamp (str): Timestamp for the most recent report
+        scatter_files (list): List of scatter plot files
+        residual_files (list): List of residual plot files
+        coef_files (list): List of coefficient plot files
+        latest_timestamp (str): Timestamp for the model's report
     """
-    # Display confusion matrix if available
-    cm_file = [f for f in cm_files if latest_timestamp in f]
-    if cm_file:
-        cm_path = os.path.join(reports_dir, cm_file[0])
-        st.subheader("Confusion Matrix")
-        cm_img = mpimg.imread(cm_path)
-        st.image(cm_img, use_column_width=True)
+    # Display scatter plot if available
+    matching_scatter = [f for f in scatter_files if latest_timestamp in f]
+    if matching_scatter:
+        try:
+            scatter_path = os.path.join(reports_dir, matching_scatter[0])
+            st.subheader("Actual vs. Predicted Scatter Plot")
+            scatter_img = mpimg.imread(scatter_path)
+            st.image(scatter_img, use_column_width=True)
+        except Exception as e:
+            st.warning(f"Could not load scatter plot visualization: {str(e)}")
 
-    # Display feature importance if available
-    fi_file = [f for f in fi_files if latest_timestamp in f]
-    if fi_file:
-        fi_path = os.path.join(reports_dir, fi_file[0])
-        st.subheader("Feature Importance")
-        fi_img = mpimg.imread(fi_path)
-        st.image(fi_img, use_column_width=True)
+    # Display residual plot if available
+    matching_residual = [f for f in residual_files if latest_timestamp in f]
+    if matching_residual:
+        try:
+            residual_path = os.path.join(reports_dir, matching_residual[0])
+            st.subheader("Residual Plot")
+            residual_img = mpimg.imread(residual_path)
+            st.image(residual_img, use_column_width=True)
+        except Exception as e:
+            st.warning(f"Could not load residual plot visualization: {str(e)}")
+
+    # Display coefficient plot if available
+    matching_coef = [f for f in coef_files if latest_timestamp in f]
+    if matching_coef:
+        try:
+            coef_path = os.path.join(reports_dir, matching_coef[0])
+            st.subheader("Feature Coefficient Plot")
+            coef_img = mpimg.imread(coef_path)
+            st.image(coef_img, use_column_width=True)
+        except Exception as e:
+            st.warning(f"Could not load coefficient plot visualization: {str(e)}")

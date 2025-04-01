@@ -5,7 +5,7 @@ import pandas as pd
 import logging
 import joblib
 from typing import Dict, Any, Optional
-
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import LinearRegression
 
 from .train_weight import train_and_save_model  # Update path if needed
@@ -64,7 +64,7 @@ def predict_using_ml(data: Optional[pd.DataFrame], Gender: str, Height: float,
 
         logger.info("Applying model to user data")
         predicted_weight = trained_model.predict(user_data)[0]
-
+        
         logger.info(f"Predicted Weight: {predicted_weight:.2f}")
 
         return {
