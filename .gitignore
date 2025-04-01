@@ -2,8 +2,8 @@ music/models/
 music/uploads/
 music/data/
 
-weight/src/models/
-weight/src/uploads/
+weight/models/
+weight/uploads/
 weight/data/
 
 # Python cache files
@@ -22,6 +22,9 @@ ENV/
 
 # Log files
 *.log
+
+# Zip files
+*.zip
 
 # Database files
 *.db
