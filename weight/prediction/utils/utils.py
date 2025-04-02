@@ -98,6 +98,51 @@ def generate_training_report(
     plt.savefig(residual_plot_path, bbox_inches='tight')
     plt.close()
 
+    # Generate Weight vs Height by Gender plot
+    # Combine train and test data for a comprehensive view
+    X_all = np.vstack((X_train, X_test))
+    y_all = np.concatenate((y_train, y_test))
+
+    # Assuming X has height in the first column and gender in the second column
+    heights = X_all[:, 0]
+    genders = X_all[:, 1]  # Assuming 0 for female, 1 for male or similar encoding
+    weights = y_all
+
+    plt.figure(figsize=(10, 8))
+
+    # Separate data by gender
+    female_indices = genders == 0
+    male_indices = genders == 1
+
+    # Plot each gender with different colors
+    plt.scatter(heights[female_indices], weights[female_indices],
+                color='pink', marker='o', alpha=0.7, label='Female')
+    plt.scatter(heights[male_indices], weights[male_indices],
+                color='blue', marker='o', alpha=0.7, label='Male')
+
+    plt.xlabel('Height', fontsize=12)
+    plt.ylabel('Weight', fontsize=12)
+    plt.title('Weight vs Height by Gender', fontsize=14)
+    plt.legend(loc='upper left')
+    plt.grid(True, alpha=0.3)
+
+    # Add trend lines for each gender
+    if np.any(female_indices):
+        z = np.polyfit(heights[female_indices], weights[female_indices], 1)
+        p = np.poly1d(z)
+        plt.plot(heights[female_indices], p(heights[female_indices]),
+                 "r--", color='deeppink', alpha=0.8)
+
+    if np.any(male_indices):
+        z = np.polyfit(heights[male_indices], weights[male_indices], 1)
+        p = np.poly1d(z)
+        plt.plot(heights[male_indices], p(heights[male_indices]),
+                 "r--", color='darkblue', alpha=0.8)
+
+    gender_plot_path = f"{base_path}_gender_height_weight.png"
+    plt.savefig(gender_plot_path, bbox_inches='tight', dpi=100)
+    plt.close()
+
     # Generate coefficient plot if the model exposes coefficients
     if hasattr(model, 'coef_'):
         # Attempt to get feature names from config, or generate default names
@@ -137,6 +182,15 @@ def generate_training_report(
         plt.imshow(scatter_img)
         plt.axis('off')
         plt.title('Actual vs Predicted Values (Blue: Training, Red: Test)')
+        pdf.savefig()
+        plt.close()
+
+        # Gender Height Weight Plot page
+        gender_img = plt.imread(gender_plot_path)
+        plt.figure(figsize=(11.7, 8.3))
+        plt.imshow(gender_img)
+        plt.axis('off')
+        plt.title('Weight vs Height by Gender')
         pdf.savefig()
         plt.close()
 
@@ -235,6 +289,7 @@ def generate_training_report(
         "metrics_path": metrics_path,
         "scatter_plot_path": scatter_plot_path,
         "residual_plot_path": residual_plot_path,
+        "gender_height_weight_plot_path": gender_plot_path,
         "coef_plot_path": coef_plot_path,
         "pdf_path": pdf_path,
         "json_path": json_path,
