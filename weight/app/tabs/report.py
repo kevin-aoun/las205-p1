@@ -114,18 +114,22 @@ def display_training_report(selected_model=None):
                 st.write("### Model Information")
                 info_data = {
                     "Metric": [
-                        "Training Date", "Model Type", 
-                        "Training Samples", "Testing Samples", 
-                        "MSE", "MAE", "R²"
+                        "Training Date", "Model Type",
+                        "Training Samples", "Testing Samples",
+                        "Training MSE", "Training MAE", "Training R²",
+                        "Testing MSE", "Testing MAE", "Testing R²"
                     ],
                     "Value": [
                         report_data.get("timestamp", "N/A"),
                         report_data.get("model_type", "N/A"),
                         report_data.get("training_samples", "N/A"),
                         report_data.get("testing_samples", "N/A"),
-                        f"{report_data.get('mse', 0):.4f}",
-                        f"{report_data.get('mae', 0):.4f}",
-                        f"{report_data.get('r2', 0):.4f}"
+                        f"{report_data.get('train_metrics', {}).get('mse', 0):.4f}",
+                        f"{report_data.get('train_metrics', {}).get('mae', 0):.4f}",
+                        f"{report_data.get('train_metrics', {}).get('r2', 0):.4f}",
+                        f"{report_data.get('test_metrics', {}).get('mse', 0):.4f}",
+                        f"{report_data.get('test_metrics', {}).get('mae', 0):.4f}",
+                        f"{report_data.get('test_metrics', {}).get('r2', 0):.4f}"
                     ]
                 }
                 st.table(pd.DataFrame(info_data))

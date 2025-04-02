@@ -8,7 +8,7 @@ def display_percentage_results(percentage_result):
     Args:
         percentage_result (dict): Result from predict_using_percentage
     """
-    st.write(f"**Predicted Weight:** {percentage_result['Weight']}")
+    st.write(f"**Predicted Weight:** {percentage_result['Weight']} kg")
     st.write(f"**Top Confidence:** {percentage_result['confidence']:.2f}%")
 
     # If we have all percentages, display them as a table

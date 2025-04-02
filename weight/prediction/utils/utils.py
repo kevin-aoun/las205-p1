@@ -4,27 +4,22 @@ import streamlit as st
 from datetime import datetime
 from typing import Dict, Any
 import matplotlib.pyplot as plt
-import seaborn as sns
 import json
 from sklearn.metrics import (
-mean_squared_error,r2_score, mean_absolute_error
+    mean_squared_error, r2_score, mean_absolute_error
 )
 
-from sklearn.ensemble import RandomForestClassifier
-
 from matplotlib.backends.backend_pdf import PdfPages
-import logging
-
-logger = logging.getLogger(__name__)
+from weight.logs import logger
 
 
 def generate_training_report(
-    model,  # Trained regression model (e.g., LinearRegression)
-    X_train: np.ndarray,
-    X_test: np.ndarray,
-    y_train: np.ndarray,
-    y_test: np.ndarray,
-    timestamp: str
+        model,  # Trained regression model (e.g., LinearRegression)
+        X_train: np.ndarray,
+        X_test: np.ndarray,
+        y_train: np.ndarray,
+        y_test: np.ndarray,
+        timestamp: str
 ) -> Dict[str, Any]:
     """
     Generate a comprehensive training report for a regression model with metrics and visualizations,
@@ -50,29 +45,51 @@ def generate_training_report(
     # Base path for report files
     base_path = os.path.join(reports_dir, f'training_report_{timestamp}')
 
-    # Get predictions on test set
-    y_pred = model.predict(X_test)
+    # Get predictions on both train and test sets
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test)
 
     # Calculate regression metrics
-    mse = mean_squared_error(y_test, y_pred)
-    mae = mean_absolute_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_test_pred)
+    mae = mean_absolute_error(y_test, y_test_pred)
+    r2 = r2_score(y_test, y_test_pred)
 
-    # Generate scatter plot: Actual vs Predicted
-    plt.figure(figsize=(8, 6))
-    plt.scatter(y_test, y_pred, alpha=0.7)
-    plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--')
-    plt.xlabel('Actual Values')
-    plt.ylabel('Predicted Values')
-    plt.title('Actual vs. Predicted Values')
+    # Generate enhanced scatter plot: Actual vs Predicted for both train and test
+    plt.figure(figsize=(10, 8))
+
+    # Plot training data points (circles)
+    plt.scatter(y_train, y_train_pred, color='blue', marker='o', alpha=0.6, label='Training Data')
+
+    # Plot test data points (triangles)
+    plt.scatter(y_test, y_test_pred, color='red', marker='^', alpha=0.8, label='Test Data')
+
+    # Add the perfect prediction line
+    all_y = np.concatenate([y_train, y_test])
+    min_val, max_val = min(all_y), max(all_y)
+    plt.plot([min_val, max_val], [min_val, max_val], color='green', linestyle='--', label='Perfect Prediction')
+
+    plt.xlabel('Actual Weight', fontsize=12)
+    plt.ylabel('Predicted Weight', fontsize=12)
+    plt.title('Actual vs. Predicted Weight', fontsize=14)
+    plt.legend(loc='upper left')
+    plt.grid(True, alpha=0.3)
+
+    # Add annotations showing train and test sizes
+    plt.annotate(f'Train set: {len(y_train)} samples',
+                 xy=(0.05, 0.95), xycoords='axes fraction',
+                 bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.8))
+    plt.annotate(f'Test set: {len(y_test)} samples',
+                 xy=(0.05, 0.90), xycoords='axes fraction',
+                 bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.8))
+
     scatter_plot_path = f"{base_path}_scatter.png"
-    plt.savefig(scatter_plot_path, bbox_inches='tight')
+    plt.savefig(scatter_plot_path, bbox_inches='tight', dpi=100)
     plt.close()
 
     # Generate residual plot: Residuals vs Predicted
-    residuals = y_test - y_pred
+    residuals = y_test - y_test_pred
     plt.figure(figsize=(8, 6))
-    plt.scatter(y_pred, residuals, alpha=0.7)
+    plt.scatter(y_test_pred, residuals, alpha=0.7)
     plt.axhline(0, color='red', linestyle='--')
     plt.xlabel('Predicted Values')
     plt.ylabel('Residuals')
@@ -119,7 +136,7 @@ def generate_training_report(
         plt.figure(figsize=(11.7, 8.3))
         plt.imshow(scatter_img)
         plt.axis('off')
-        plt.title('Actual vs Predicted Values')
+        plt.title('Actual vs Predicted Values (Blue: Training, Red: Test)')
         pdf.savefig()
         plt.close()
 
@@ -146,10 +163,21 @@ def generate_training_report(
         plt.figure(figsize=(11.7, 8.3))
         plt.axis('off')
         plt.text(0.1, 0.9, "Model Performance Metrics", fontsize=18)
+
+        # Calculate train metrics as well
+        train_mse = mean_squared_error(y_train, y_train_pred)
+        train_mae = mean_absolute_error(y_train, y_train_pred)
+        train_r2 = r2_score(y_train, y_train_pred)
+
         metrics_text = [
-            f"MSE: {mse:.4f}",
-            f"MAE: {mae:.4f}",
-            f"R²: {r2:.4f}"
+            f"Training Set Metrics:",
+            f"  - MSE: {train_mse:.4f}",
+            f"  - MAE: {train_mae:.4f}",
+            f"  - R²: {train_r2:.4f}",
+            f"\nTest Set Metrics:",
+            f"  - MSE: {mse:.4f}",
+            f"  - MAE: {mae:.4f}",
+            f"  - R²: {r2:.4f}",
         ]
         plt.text(0.1, 0.8, "\n".join(metrics_text), fontsize=12)
         pdf.savefig()
@@ -170,16 +198,28 @@ def generate_training_report(
         f.write(f"Training samples: {len(X_train)}\n")
         f.write(f"Testing samples: {len(X_test)}\n\n")
         f.write("## Performance Metrics\n")
-        f.write(f"MSE: {mse:.4f}\n")
-        f.write(f"MAE: {mae:.4f}\n")
-        f.write(f"R²: {r2:.4f}\n")
+        f.write("Training Set:\n")
+        f.write(f"  MSE: {train_mse:.4f}\n")
+        f.write(f"  MAE: {train_mae:.4f}\n")
+        f.write(f"  R²: {train_r2:.4f}\n\n")
+        f.write("Test Set:\n")
+        f.write(f"  MSE: {mse:.4f}\n")
+        f.write(f"  MAE: {mae:.4f}\n")
+        f.write(f"  R²: {r2:.4f}\n")
 
     # Save report data as JSON for potential future use
     report_data = {
         "timestamp": timestamp,
-        "mse": mse,
-        "mae": mae,
-        "r2": r2,
+        "test_metrics": {
+            "mse": mse,
+            "mae": mae,
+            "r2": r2
+        },
+        "train_metrics": {
+            "mse": train_mse,
+            "mae": train_mae,
+            "r2": train_r2
+        },
         "model_type": type(model).__name__,
         "training_samples": len(X_train),
         "testing_samples": len(X_test)
@@ -200,5 +240,8 @@ def generate_training_report(
         "json_path": json_path,
         "mse": mse,
         "mae": mae,
-        "r2": r2
+        "r2": r2,
+        "train_mse": train_mse,
+        "train_mae": train_mae,
+        "train_r2": train_r2
     }

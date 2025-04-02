@@ -3,10 +3,8 @@ import logging
 import streamlit as st
 import os
 
-from weight.logs import setup_logging
+from weight.logs import setup_logging, logger
 from weight.core import ensure_directories
-
-logger = logging.getLogger('weight_predictor')
 
 def create_default_config():
     """
