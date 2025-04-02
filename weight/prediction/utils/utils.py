@@ -4,201 +4,248 @@ import streamlit as st
 from datetime import datetime
 from typing import Dict, Any
 import matplotlib.pyplot as plt
-import seaborn as sns
-import json
-from sklearn.metrics import (
-mean_squared_error,r2_score, mean_absolute_error
-)
-
-from sklearn.ensemble import RandomForestClassifier
-
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from matplotlib.backends.backend_pdf import PdfPages
 import logging
+from PIL import Image
 
 logger = logging.getLogger(__name__)
 
+def create_plot_figure(figsize: tuple = (8, 6)) -> plt.Figure:
+    """Create and return a new matplotlib figure."""
+    fig, ax = plt.subplots(figsize=figsize)
+    return fig, ax
+
+def save_and_close_plot(fig: plt.Figure, filepath: str) -> None:
+    """Save the plot to the specified path and close the figure."""
+    fig.savefig(filepath, bbox_inches='tight')
+    plt.close(fig)
+
+def generate_scatter_plot(X: np.ndarray, y: np.ndarray, feature_idx: int, title: str, xlabel: str, ylabel: str, filepath: str):
+    """Generate and save a scatter plot."""
+    fig, ax = create_plot_figure()
+    ax.scatter(X[:, feature_idx], y, alpha=0.7)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    save_and_close_plot(fig, filepath)
+
+def generate_actual_vs_predicted_plot(y_pred: np.ndarray, y_test: np.ndarray, title: str, xlabel: str, ylabel: str, filepath: str):
+    """Generate and save a scatter plot."""
+    fig, ax = create_plot_figure()
+    ax.scatter(y_pred,y_test, alpha=0.7)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    save_and_close_plot(fig, filepath)
+
+def generate_best_fit_line(X: np.ndarray, y: np.ndarray, feature_idx: int, filepath: str):
+    """Generate and save a scatter plot with a line of best fit."""
+    fig, ax = create_plot_figure()
+    ax.scatter(X[:, feature_idx], y, alpha=0.7, color='blue')
+
+    # Fit a line of best fit (linear regression)
+    slope, intercept = np.polyfit(X[:, feature_idx], y, 1)
+    ax.plot(X[:, feature_idx], slope * X[:, feature_idx] + intercept, color='red', linestyle='--')
+    
+    ax.set_xlabel('Height')
+    ax.set_ylabel('Weight Kg')
+    ax.set_title('Height vs Weight with Line of Best Fit')
+    save_and_close_plot(fig, filepath)
+
+def generate_residual_plot(y_test: np.ndarray, y_pred: np.ndarray, filepath: str):
+    """Generate and save a residual plot."""
+    residuals = y_test - y_pred
+    fig, ax = create_plot_figure()
+    ax.scatter(y_pred, residuals, alpha=0.7)
+    ax.axhline(0, color='red', linestyle='--')
+    ax.set_xlabel('Predicted Values')
+    ax.set_ylabel('Residuals')
+    ax.set_title('Residual Plot')
+    save_and_close_plot(fig, filepath)
 
 def generate_training_report(
-    model,  # Trained regression model (e.g., LinearRegression)
-    X_train: np.ndarray,
-    X_test: np.ndarray,
-    y_train: np.ndarray,
-    y_test: np.ndarray,
-    timestamp: str
+        model, X_train, X_test, y_train, y_test, timestamp: str
 ) -> Dict[str, Any]:
-    """
-    Generate a comprehensive training report for a regression model with metrics and visualizations,
-    and save a PDF report including key plots and metrics.
+    """Generate a comprehensive training report with metrics and visualizations."""
+    try:
+        # Create directory for reports if it doesn't exist
+        config = st.session_state.config
+        models_dir = config['model']['models_dir']
+        reports_dir = os.path.join(models_dir, 'train_reports')
+        os.makedirs(reports_dir, exist_ok=True)
 
-    Args:
-        model: Trained regression model (e.g., LinearRegression)
-        X_train: Training features
-        X_test: Testing features
-        y_train: Training target values
-        y_test: Testing target values
-        timestamp: Timestamp string for naming the report
+        # Base path for report files
+        base_path = os.path.join(reports_dir, f'training_report_{timestamp}')
 
-    Returns:
-        Dict: Report metrics and file paths for generated plots and reports
-    """
-    # Create directory for reports if it doesn't exist
-    config = st.session_state.config
-    models_dir = config['model']['models_dir']
-    reports_dir = os.path.join(models_dir, 'train_reports')
-    os.makedirs(reports_dir, exist_ok=True)
+        # Get predictions on test set
+        y_pred = model.predict(X_test)
 
-    # Base path for report files
-    base_path = os.path.join(reports_dir, f'training_report_{timestamp}')
+        # Calculate metrics
+        mse = mean_squared_error(y_test, y_pred)
+        mae = mean_absolute_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
 
-    # Get predictions on test set
-    y_pred = model.predict(X_test)
+        # Generate scatter plot: Gender vs Target (y)
+        gender_scatter_path = f"{base_path}_gender_scatter.png"
+        generate_scatter_plot(X_train, y_train, 1, "Gender vs Weight", "Gender (0 or 1)", "Weight Kg", gender_scatter_path)
 
-    # Calculate regression metrics
-    mse = mean_squared_error(y_test, y_pred)
-    mae = mean_absolute_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
+        #Compares Actual and Predicted Weight test values
+        weight_comparison_path = f"{base_path}_weight_comparison.png"
+        generate_actual_vs_predicted_plot(y_pred,y_test,"Actual vs. Predicted Weight","Actual Weight","Predicted Weight",weight_comparison_path)
 
-    # Generate scatter plot: Actual vs Predicted
-    plt.figure(figsize=(8, 6))
-    plt.scatter(y_test, y_pred, alpha=0.7)
-    plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--')
-    plt.xlabel('Actual Values')
-    plt.ylabel('Predicted Values')
-    plt.title('Actual vs. Predicted Values')
-    scatter_plot_path = f"{base_path}_scatter.png"
-    plt.savefig(scatter_plot_path, bbox_inches='tight')
-    plt.close()
+       
 
-    # Generate residual plot: Residuals vs Predicted
-    residuals = y_test - y_pred
-    plt.figure(figsize=(8, 6))
-    plt.scatter(y_pred, residuals, alpha=0.7)
-    plt.axhline(0, color='red', linestyle='--')
-    plt.xlabel('Predicted Values')
-    plt.ylabel('Residuals')
-    plt.title('Residual Plot')
-    residual_plot_path = f"{base_path}_residuals.png"
-    plt.savefig(residual_plot_path, bbox_inches='tight')
-    plt.close()
 
-    # Generate coefficient plot if the model exposes coefficients
-    if hasattr(model, 'coef_'):
-        # Attempt to get feature names from config, or generate default names
-        feature_names = config.get('feature_names', [f'feature_{i}' for i in range(X_train.shape[1])])
-        coefs = model.coef_
-        # Handle multi-output regression by selecting the first set of coefficients if needed
-        if coefs.ndim > 1:
-            coefs = coefs[0]
-        indices = np.argsort(np.abs(coefs))[::-1]
+        # Generate scatter plot: Height vs Target (y) with line of best fit
+        height_scatter_path = f"{base_path}_height_scatter.png"
+        generate_best_fit_line(X_train, y_train, 0, height_scatter_path)
 
-        plt.figure(figsize=(10, 6))
-        plt.title('Feature Coefficients')
-        plt.bar(range(len(coefs)), coefs[indices], align='center')
-        plt.xticks(range(len(coefs)), ["Height", "Gender"], rotation=45)
-        plt.xlabel('Features')
-        plt.ylabel('Coefficient Value')
-        coef_plot_path = f"{base_path}_coefficients.png"
-        plt.savefig(coef_plot_path, bbox_inches='tight')
-        plt.close()
-    else:
-        coef_plot_path = None
+        # Generate residual plot
+        residual_plot_path = f"{base_path}_residuals.png"
+        generate_residual_plot(y_test, y_pred, residual_plot_path)
 
-    # Generate PDF report
-    pdf_path = f"{base_path}.pdf"
-    with PdfPages(pdf_path) as pdf:
-        # Title page
-        plt.figure(figsize=(11.7, 8.3))
-        plt.text(0.5, 0.5, f"Regression Model Training Report\n\n{timestamp}",
-                 horizontalalignment='center', verticalalignment='center', fontsize=20)
-        plt.axis('off')
-        pdf.savefig()
-        plt.close()
+        # Generate PDF report
+        pdf_path = create_pdf_report(
+            base_path, timestamp, model, X_train, X_test, mse, mae, r2,
+            gender_scatter_path, height_scatter_path, residual_plot_path
+        )
 
-        # Scatter Plot page
-        scatter_img = plt.imread(scatter_plot_path)
-        plt.figure(figsize=(11.7, 8.3))
-        plt.imshow(scatter_img)
-        plt.axis('off')
-        plt.title('Actual vs Predicted Values')
-        pdf.savefig()
-        plt.close()
+        # Save metrics to a text file
+        metrics_path = save_metrics_text(
+            base_path, timestamp, model, X_train, X_test, mse, mae, r2
+        )
 
-        # Residual Plot page
-        residual_img = plt.imread(residual_plot_path)
-        plt.figure(figsize=(11.7, 8.3))
-        plt.imshow(residual_img)
-        plt.axis('off')
-        plt.title('Residual Plot')
-        pdf.savefig()
-        plt.close()
+        # Save report data as JSON for potential future use
+        json_path = save_json_report(
+            base_path, timestamp, mse, mae, r2, X_test, X_train
+        )
 
-        # Coefficient Plot page (if available)
-        if coef_plot_path is not None:
-            coef_img = plt.imread(coef_plot_path)
+        logger.info(f"Training report generated successfully: {metrics_path}")
+
+        return {
+            "metrics_path": metrics_path,
+            
+            "pdf_path": pdf_path,
+            "json_path": json_path,
+            "mse": mse,
+            "mae": mae,
+            "r2": r2
+        }
+
+    except Exception as e:
+        logger.error(f"Failed to generate training report: {str(e)}", exc_info=True)
+        return {}
+
+def create_pdf_report(base_path, timestamp, model, X_train, X_test, mse, mae, r2,
+                      gender_scatter_path, height_scatter_path, residual_plot_path) -> str:
+    """Create and save a PDF report with all metrics and visualizations."""
+    try:
+        pdf_path = f"{base_path}.pdf"
+        with PdfPages(pdf_path) as pdf:
+            # Title page
             plt.figure(figsize=(11.7, 8.3))
-            plt.imshow(coef_img)
+            plt.text(0.5, 0.5, f"Model Training Report\n\n{timestamp}",
+                     horizontalalignment='center', verticalalignment='center', fontsize=20)
             plt.axis('off')
-            plt.title('Feature Coefficients')
             pdf.savefig()
             plt.close()
 
-        # Metrics page
-        plt.figure(figsize=(11.7, 8.3))
-        plt.axis('off')
-        plt.text(0.1, 0.9, "Model Performance Metrics", fontsize=18)
-        metrics_text = [
-            f"MSE: {mse:.4f}",
-            f"MAE: {mae:.4f}",
-            f"R²: {r2:.4f}"
-        ]
-        plt.text(0.1, 0.8, "\n".join(metrics_text), fontsize=12)
-        pdf.savefig()
-        plt.close()
+            # Gender vs Weight plot
+            gender_scatter_img = Image.open(gender_scatter_path)
+            plt.figure(figsize=(11.7, 8.3))
+            plt.imshow(gender_scatter_img)
+            plt.axis('off')
+            plt.title('Gender vs Weight')
+            pdf.savefig()
+            plt.close()
 
-    logger.info(f"PDF report generated at: {pdf_path}")
+            # Height vs Weight plot with line of best fit
+            height_scatter_img = Image.open(height_scatter_path)
+            plt.figure(figsize=(11.7, 8.3))
+            plt.imshow(height_scatter_img)
+            plt.axis('off')
+            plt.title('Height vs Weight with Line of Best Fit')
+            pdf.savefig()
+            plt.close()
 
-    # Save metrics to a text file
-    metrics_path = f"{base_path}_metrics.txt"
-    with open(metrics_path, 'w') as f:
-        f.write("# Regression Model Training Report\n\n")
-        f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-        f.write("## Model Information\n")
-        f.write(f"Model Type: {type(model).__name__}\n")
-        if hasattr(model, 'coef_'):
-            f.write("Model has coefficients.\n")
-        f.write("\n## Dataset Information\n")
-        f.write(f"Training samples: {len(X_train)}\n")
-        f.write(f"Testing samples: {len(X_test)}\n\n")
-        f.write("## Performance Metrics\n")
-        f.write(f"MSE: {mse:.4f}\n")
-        f.write(f"MAE: {mae:.4f}\n")
-        f.write(f"R²: {r2:.4f}\n")
+            # Residual plot
+            residual_img = Image.open(residual_plot_path)
+            plt.figure(figsize=(11.7, 8.3))
+            plt.imshow(residual_img)
+            plt.axis('off')
+            plt.title('Residual Plot')
+            pdf.savefig()
+            plt.close()
 
-    # Save report data as JSON for potential future use
-    report_data = {
-        "timestamp": timestamp,
-        "mse": mse,
-        "mae": mae,
-        "r2": r2,
-        "model_type": type(model).__name__,
-        "training_samples": len(X_train),
-        "testing_samples": len(X_test)
-    }
+            # Metrics page
+            plt.figure(figsize=(11.7, 8.3))
+            plt.axis('off')
+            plt.text(0.1, 0.9, "Model Performance Metrics", fontsize=18)
+            metrics_text = [
+                f"MSE: {mse:.4f}",
+                f"MAE: {mae:.4f}",
+                f"R²: {r2:.4f}"
+            ]
+            plt.text(0.1, 0.8, "\n".join(metrics_text), fontsize=12)
+            pdf.savefig()
+            plt.close()
 
-    json_path = f"{base_path}_report.json"
-    with open(json_path, 'w') as f:
-        json.dump(report_data, f, indent=2)
+        logger.info(f"PDF report generated at: {pdf_path}")
+        return pdf_path
 
-    logger.info(f"Training report generated: {metrics_path}")
+    except Exception as e:
+        logger.error(f"Failed to create PDF report: {str(e)}", exc_info=True)
+        return ""
 
-    return {
-        "metrics_path": metrics_path,
-        "scatter_plot_path": scatter_plot_path,
-        "residual_plot_path": residual_plot_path,
-        "coef_plot_path": coef_plot_path,
-        "pdf_path": pdf_path,
-        "json_path": json_path,
-        "mse": mse,
-        "mae": mae,
-        "r2": r2
-    }
+def save_metrics_text(base_path, timestamp, model, X_train, X_test, mse, mae, r2) -> str:
+    """Save metrics to a text file."""
+    try:
+        metrics_path = f"{base_path}_metrics.txt"
+        with open(metrics_path, 'w') as f:
+            f.write("# Model Training Report\n\n")
+            f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+
+            f.write("## Model Information\n")
+            f.write(f"Model Type: Linear Regression\n")
+          
+
+            f.write("## Dataset Information\n")
+            f.write(f"Training samples: {len(X_train)}\n")
+            f.write(f"Testing samples: {len(X_test)}\n\n")
+
+            f.write("## Performance Metrics\n")
+            f.write(f"MSE: {mse:.4f}\n")
+            f.write(f"MAE: {mae:.4f}\n")
+            f.write(f"R²: {r2:.4f}\n")
+
+        return metrics_path
+
+    except Exception as e:
+        logger.error(f"Failed to save metrics text: {str(e)}", exc_info=True)
+        return ""
+
+def save_json_report(base_path, timestamp, mse, mae, r2, X_test, X_train) -> str:
+    """Save report data as JSON."""
+    try:
+        report_data = {
+            "timestamp": timestamp,
+            "mse": mse,
+            "mae": mae,
+            "r2": r2,
+            "model_type": "Linear Regression",
+            "training_samples": len(X_train),
+            "testing_samples": len(X_test)
+
+        }
+
+        json_path = f"{base_path}_report.json"
+        import json
+        with open(json_path, 'w') as f:
+            json.dump(report_data, f, indent=2)
+
+        return json_path
+
+    except Exception as e:
+        logger.error(f"Failed to save JSON report: {str(e)}", exc_info=True)
+        return ""

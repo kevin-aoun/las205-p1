@@ -60,7 +60,7 @@ def check_model_files(return_full_paths=False):
 
     model_files = [
         f for f in os.listdir(models_dir)
-        if f.startswith('music_preferences_model_') and (f.endswith('.joblib') or f.endswith('.pkl'))
+        if f.startswith('weight_predictor_model_') and (f.endswith('.joblib') or f.endswith('.pkl'))
     ]
 
     if not model_files:

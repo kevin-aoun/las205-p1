@@ -3,7 +3,7 @@ app:
   - 0
   - 220
   default_height: 160
-  title: Height Predictor
+  title: Weight Predictor
 data:
   height_bins:
   - 0
