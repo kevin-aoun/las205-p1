@@ -35,7 +35,7 @@ def render_prediction_tab(model_exists):
         st.info("Please upload a CSV file to make predictions.")
 
 
-def make_prediction(height, gender_value, model_exists):
+def make_prediction(height: float, gender_value: int, model_exists: bool):
     """
     Generate and display predictions using both methods
 
@@ -91,18 +91,18 @@ def display_ml_prediction(data, height, gender_value, can_use_ml):
         if st.session_state.get('trained_model') is not None:
             ml_result = predict_using_ml(
                 data=None,
-                Gender="Male" if gender_value == 1 else "Female",
+                gender=gender_value,
                 Height=height,
                 trained_model=st.session_state['trained_model']
             )
         else:
             ml_result = predict_using_ml(
                 data=data,
-                Gender="Male" if gender_value == 1 else "Female",
+                gender=gender_value,
                 Height=height
             )
 
-        st.write(f"**Predicted Weight:** {ml_result['Weight']}")
+        st.write(f"**Predicted Weight:** {ml_result['Weight']} kg")
         if ml_result['confidence'] is not None:
             st.write(f"**Confidence:** {ml_result['confidence']:.2f}%")
 

@@ -67,14 +67,13 @@ def display_training_report(selected_model=None):
 
         latest_timestamp = latest_metrics.replace('_metrics.txt', '')
 
-        # Check for report files: scatter, residuals, coefficients, json, pdf
-        gender_scatter_file = [f for f in os.listdir(reports_dir) if f.endswith('gender_scatter.png')]
-        height_scatter_file = [f for f in os.listdir(reports_dir) if f.endswith('height_scatter.png')]
-        residual_file = [f for f in os.listdir(reports_dir) if f.endswith('_residuals.png')]
-        comparison_file = [f for f in os.listdir(reports_dir) if f.endswith('_comparison.png')]
-        coef_file = [f for f in os.listdir(reports_dir) if f.endswith('_coefficients.png')]
-        json_file = [f for f in os.listdir(reports_dir) if f.endswith('_report.json')]
-        pdf_file = [f for f in os.listdir(reports_dir) if f.endswith('.pdf')]
+        # Check for report files: scatter, residuals, coefficients, gender plot, json, pdf
+        scatter_files = [f for f in os.listdir(reports_dir) if f.endswith('_scatter.png')]
+        gender_plot_files = [f for f in os.listdir(reports_dir) if f.endswith('_gender_height_weight.png')]
+        residual_files = [f for f in os.listdir(reports_dir) if f.endswith('_residuals.png')]
+        coef_files = [f for f in os.listdir(reports_dir) if f.endswith('_coefficients.png')]
+        json_files = [f for f in os.listdir(reports_dir) if f.endswith('_report.json')]
+        pdf_files = [f for f in os.listdir(reports_dir) if f.endswith('.pdf')]
 
         # Display metrics in tables
         st.subheader("Regression Model Training Report")
@@ -112,18 +111,22 @@ def display_training_report(selected_model=None):
                 st.write("### Model Information")
                 info_data = {
                     "Metric": [
-                        "Training Date", "Model Type", 
-                        "Training Samples", "Testing Samples", 
-                        "MSE", "MAE", "R²"
+                        "Training Date", "Model Type",
+                        "Training Samples", "Testing Samples",
+                        "Training MSE", "Training MAE", "Training R²",
+                        "Testing MSE", "Testing MAE", "Testing R²"
                     ],
                     "Value": [
                         report_data.get("timestamp", "N/A"),
                         report_data.get("model_type", "N/A"),
                         report_data.get("training_samples", "N/A"),
                         report_data.get("testing_samples", "N/A"),
-                        f"{report_data.get('mse', 0):.4f}",
-                        f"{report_data.get('mae', 0):.4f}",
-                        f"{report_data.get('r2', 0):.4f}"
+                        f"{report_data.get('train_metrics', {}).get('mse', 0):.4f}",
+                        f"{report_data.get('train_metrics', {}).get('mae', 0):.4f}",
+                        f"{report_data.get('train_metrics', {}).get('r2', 0):.4f}",
+                        f"{report_data.get('test_metrics', {}).get('mse', 0):.4f}",
+                        f"{report_data.get('test_metrics', {}).get('mae', 0):.4f}",
+                        f"{report_data.get('test_metrics', {}).get('r2', 0):.4f}"
                     ]
                 }
                 st.table(pd.DataFrame(info_data))
@@ -142,19 +145,23 @@ def display_training_report(selected_model=None):
                 st.warning(f"Could not load metrics file content: {str(e)}")
 
         # Display visualizations
-        display_report_visualizations(reports_dir, gender_scatter_file,height_scatter_file,comparison_file, residual_file, coef_file, latest_timestamp)
+        display_report_visualizations(reports_dir, scatter_files, gender_plot_files, residual_files, coef_files,
+                                      latest_timestamp)
 
     except Exception as e:
         st.error(f"Error displaying training report: {str(e)}")
 
 
-def display_report_visualizations(reports_dir, gender_scatter_file,height_scatter_file,comparison_file, residual_file, coef_file, latest_timestamp):
+def display_report_visualizations(reports_dir, scatter_files, gender_plot_files, residual_files, coef_files,
+                                  latest_timestamp):
+
     """
     Display report visualizations
 
     Args:
         reports_dir (str): Directory containing report files
         scatter_files (list): List of scatter plot files
+        gender_plot_files (list): List of gender height-weight plot files
         residual_files (list): List of residual plot files
         coef_files (list): List of coefficient plot files
         latest_timestamp (str): Timestamp for the model's report
@@ -190,6 +197,17 @@ def display_report_visualizations(reports_dir, gender_scatter_file,height_scatte
         except Exception as e:
             st.warning(f"Could not load scatter plot visualization: {str(e)}")
 
+    # Display Weight vs Height by Gender plot if available
+    matching_gender_plot = [f for f in gender_plot_files if latest_timestamp in f]
+    if matching_gender_plot:
+        try:
+            gender_plot_path = os.path.join(reports_dir, matching_gender_plot[0])
+            st.subheader("Weight vs Height by Gender")
+            gender_plot_img = mpimg.imread(gender_plot_path)
+            st.image(gender_plot_img, use_column_width=True)
+        except Exception as e:
+            st.warning(f"Could not load weight vs height by gender plot: {str(e)}")
+
     # Display residual plot if available
     matching_residual = [f for f in residual_file if latest_timestamp in f]
     if matching_residual:
@@ -211,5 +229,3 @@ def display_report_visualizations(reports_dir, gender_scatter_file,height_scatte
             st.image(coef_img, use_column_width=True)
         except Exception as e:
             st.warning(f"Could not load coefficient plot visualization: {str(e)}")
-
-    

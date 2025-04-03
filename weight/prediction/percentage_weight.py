@@ -3,44 +3,26 @@ Percentage-based prediction module for weight categories.
 """
 import pandas as pd
 import streamlit as st
-import logging
 from typing import Dict, Any
+from weight.logs import logger
 
-logger = logging.getLogger(__name__)
-
-def determine_age_group(Gender: str) -> str:
-    """
-    Determine the gender group (replacing age group in original logic).
-
-    Args:
-        Gender (str): Gender value (e.g., 'Male', 'Female')
-
-    Returns:
-        str: Gender group label
-    """
-    return Gender  # assuming direct mapping, no bins needed
-
-def predict_using_percentage(data: pd.DataFrame, Gender: str, Height: float) -> Dict[str, Any]:
+def predict_using_percentage(data: pd.DataFrame, gender: int, Height: float) -> Dict[str, Any]:
     """
     Predict Weight category using percentage-based statistics.
     Returns all Weight percentages, not just the top one.
 
     Args:
         data (pd.DataFrame): Dataset containing Gender, Height, and Weight
-        Gender (str): User's gender (e.g., 'Male', 'Female')
+        gender (str): User's gender (1 (Male), 0 (Female))
         Height (float): User's height in cm
 
     Returns:
         Dict[str, Any]: Dictionary with predicted Weight, confidence, and all percentages
     """
     try:
-        # Determine gender group (reuse determine_age_group just for structure)
-        gender_group = determine_age_group(Gender)
-        logger.info(f"Determined gender group '{gender_group}' for Gender {Gender}")
-
         # Filter by Gender
-        filtered_data = data[data['Gender'] == gender_group]
-        logger.info(f"Filtered by Gender {Gender}: {len(filtered_data)} rows")
+        filtered_data = data[data['Gender'] == gender]
+        logger.info(f"Filtered by Gender {gender}: {len(filtered_data)} rows")
 
         # Filter by Height group using config
         config = st.session_state.config

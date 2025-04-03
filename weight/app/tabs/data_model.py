@@ -86,7 +86,6 @@ def render_data_model_tab(model_exists, latest_model):
 
             except Exception as e:
                 logger.error(f"Error processing uploaded file: {str(e)}", exc_info=True)
-                st.error(f"Error processing file: {str(e)}")
 
     # Only show data preview and model options if we have data
     if 'current_data' in st.session_state and st.session_state['current_data'] is not None:
@@ -166,7 +165,7 @@ def train_model(df):
 
             if model is not None:
                 st.session_state['trained_model'] = model
-            
+
                 st.session_state['model_trained'] = True
                 st.session_state['file_processed'] = True
                 st.session_state['show_training_report'] = True
@@ -180,5 +179,4 @@ def train_model(df):
             else:
                 st.error("Model training failed. Check logs for details.")
         except Exception as e:
-            st.error(f"Error training model: {str(e)}")
             logger.error(f"Error training model: {str(e)}", exc_info=True)

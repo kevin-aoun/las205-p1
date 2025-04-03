@@ -2,7 +2,7 @@ import streamlit as st
 
 from weight.app.tabs import *
 from weight.app.sidebar import render_config_sidebar
-from weight.core import init_config, check_model_files
+from weight.core import init_config, return_latest_model
 
 def run_app2():
     """Main application entry point"""
@@ -35,7 +35,7 @@ def run_app2():
         st.rerun()
 
     # Check if a saved model exists
-    latest_model = check_model_files(return_full_paths=False)
+    latest_model = return_latest_model(return_full_paths=False)
     model_exists = latest_model is not None and config['model']['use_saved_model']
 
     # Create tabs for different sections

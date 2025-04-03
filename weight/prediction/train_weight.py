@@ -1,16 +1,14 @@
 import os
 import pandas as pd
 import streamlit as st
-import logging
 import joblib
 from datetime import datetime
-from typing import Tuple, Optional
+from typing import Optional
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from weight.prediction.utils import generate_training_report
-
-logger = logging.getLogger(__name__)
+from weight.logs import logger
 
 def train_and_save_model(df: pd.DataFrame, save_model: bool = True
                         ) -> Optional[LinearRegression]:
