@@ -183,13 +183,13 @@ def generate_training_report(
         z = np.polyfit(heights[female_indices], weights[female_indices], 1)
         p = np.poly1d(z)
         plt.plot(heights[female_indices], p(heights[female_indices]),
-                 "r--", color='deeppink', alpha=0.8)
+                 "--", color='deeppink', alpha=0.8)
 
     if np.any(male_indices):
         z = np.polyfit(heights[male_indices], weights[male_indices], 1)
         p = np.poly1d(z)
         plt.plot(heights[male_indices], p(heights[male_indices]),
-                 "r--", color='darkblue', alpha=0.8)
+                 "--", color='darkblue', alpha=0.8)
 
     gender_plot_path = f"{base_path}_gender_height_weight.png"
     plt.savefig(gender_plot_path, bbox_inches='tight', dpi=100)
