@@ -1,6 +1,3 @@
-"""
-Model training module for predicting weight using linear regression.
-"""
 import os
 import pandas as pd
 import streamlit as st
@@ -18,13 +15,6 @@ def train_and_save_model(df: pd.DataFrame, save_model: bool = True
     """
     Train a linear regression model to predict Weight from Height and Gender,
     and optionally save the model to disk. Also logs training performance.
-
-    Args:
-        df (pd.DataFrame): DataFrame with 'Height', 'Gender', and 'Weight'
-        save_model (bool): Whether to save the model to disk
-
-    Returns:
-        Optional[LinearRegression]: Trained linear regression model
     """
     try:
         config = st.session_state.config
@@ -36,8 +26,9 @@ def train_and_save_model(df: pd.DataFrame, save_model: bool = True
         X = df[['Height', 'Gender']].values
         y = df['Weight'].values
 
+        random_state = config.get('model', {}).get('random_state', 42)
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=config['model']['random_state']
+            X, y, test_size=0.2, random_state=random_state
         )
 
         model = LinearRegression()
@@ -50,7 +41,7 @@ def train_and_save_model(df: pd.DataFrame, save_model: bool = True
 
         mse = mean_squared_error(y_test, y_pred)
         r2 = r2_score(y_test, y_pred)
-     
+
         logger.info(f"Mean Squared Error: {mse:.4f}")
         logger.info(f"R² Score: {r2:.4f}")
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -68,9 +59,7 @@ def train_and_save_model(df: pd.DataFrame, save_model: bool = True
             models_dir = config['model']['models_dir']
             os.makedirs(models_dir, exist_ok=True)
 
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             model_path = os.path.join(models_dir, f'weight_predictor_model_{timestamp}.joblib')
-
             joblib.dump(model, model_path)
             logger.info(f"Linear regression model saved to: {model_path}")
             assert os.path.exists(model_path), f"Model file not found at {model_path}"
@@ -78,7 +67,5 @@ def train_and_save_model(df: pd.DataFrame, save_model: bool = True
         return model
 
     except Exception as e:
-        logger.error(f"Error in training model: {str(e)}", exc_info=True)
-        import traceback
-        traceback.print_exc()
+        logger.error(f"Error training model {type(model).__name__}: {str(e)}", exc_info=True)
         return None
